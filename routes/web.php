@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [IndexController::class, 'index'])->name('welcome');
+Route::get('/signup', [IndexController::class, 'signup'])->name('signup');
+Route::get('/signin', [IndexController::class, 'signin'])->name('signin');
+
+/**Admin Route */
+Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');

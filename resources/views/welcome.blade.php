@@ -56,10 +56,10 @@
                     <a class="nav-link" href="#contact">Contact</a>
                   </li>
                   <li class="nav-item mt-3 mt-lg-0">
-                    <a class="nav-link" href="login.php">Sign in</a>
+                    <a class="nav-link" href="{{route('signin')}}">Sign in</a>
                   </li>
                   <li class="nav-item mt-3 mt-lg-0">
-                    <a class="nav-link" href="signup.php">Sign up</a>
+                    <a class="nav-link" href="{{route('signup')}}">Sign up</a>
                   </li>
                 </ul>
               </div>
