@@ -12,7 +12,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="hover-link1" style="float: left;">Back</a>
+        <a href="{{route('welcome')}}" class="hover-link1" style="float: left;">Back</a>
         <p class="header-text">Welcome Back!</p>
         <p class="sub-text">Login with your details to continue</p>
         <div class="form-body">
@@ -45,5 +45,31 @@
             </div>
         </div>
     </div>
+
+<!----Sweet Alert---->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      @if (session('success'))
+          Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: '{{ session('success') }}',
+              confirmButtonText: 'OK'
+          });
+      @endif
+
+      @if (session('error'))
+          Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: '{{ session('error') }}',
+              confirmButtonText: 'Try Again'
+          });
+      @endif
+  });
+</script>
+
 </body>
 </html>

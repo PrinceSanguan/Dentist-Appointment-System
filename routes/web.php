@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SignupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,10 @@ use App\Http\Controllers\AdminController;
 */
 
 Route::get('/', [IndexController::class, 'index'])->name('welcome');
-Route::get('/signup', [IndexController::class, 'signup'])->name('signup');
+
+Route::get('/signup', [SignupController::class, 'index'])->name('signup');
+Route::post('/signup', [SignupController::class, 'signup'])->name('signup-form');
+
 Route::get('/signin', [IndexController::class, 'signin'])->name('signin');
 
 /**Admin Route */
