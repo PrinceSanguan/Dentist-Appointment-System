@@ -16,18 +16,20 @@
         <p class="header-text">Welcome Back!</p>
         <p class="sub-text">Login with your details to continue</p>
         <div class="form-body">
-            <form action="" method="POST">
+
+            <form action="{{route('login-form')}}" method="post">
+                @csrf
                 <div class="label-td">
                     <label for="useremail" class="form-label">Email:</label>
                 </div>
                 <div class="label-td">
-                    <input type="email" name="useremail" class="input-text" placeholder="Email Address" required>
+                    <input type="email" name="email" class="input-text" placeholder="Email Address" required>
                 </div>
                 <div class="label-td">
                     <label for="userpassword" class="form-label">Password:</label>
                 </div>
                 <div class="label-td">
-                    <input type="password" name="userpassword" class="input-text" placeholder="Password" required>
+                    <input type="password" name="password" class="input-text" placeholder="Password" required>
                 </div>
                 <div>
 
@@ -36,6 +38,7 @@
                     <input type="submit" value="Login" class="login-btn">
                 </div>
             </form>
+
             <div>
                 <br>
                 <label for="" class="sub-text">Don't have an account? </label>

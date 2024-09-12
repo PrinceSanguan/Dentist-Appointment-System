@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -19,10 +20,26 @@ return new class extends Migration
             $table->string('number');
             $table->string('address');
             $table->date('dob');
-            $table->enum('userRole', ['admin', 'patient', 'doctor']);
+            $table->enum('userRole', ['admin', 'patient', 'dentist']);
             $table->string('password');
             $table->timestamps();
         });
+
+        // Insert default data after the table has been created
+        DB::table('users')->insert([
+            [
+                'firstName' => 'admin',
+                'lastName' => 'admin',
+                'email' => 'admin@gmail.com',
+                'number' => '09123456789',
+                'address' => 'dyan lang po',
+                'dob' => '2024-09-11',
+                'userRole' => 'admin',
+                'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 
     /**
