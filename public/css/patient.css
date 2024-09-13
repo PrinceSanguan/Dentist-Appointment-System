@@ -1,0 +1,105 @@
+.dashbord-tables {
+    animation: transitionIn-Y-over 0.5s;
+}
+.filter-container {
+    animation: transitionIn-Y-bottom 0.5s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.sub-table {
+    animation: transitionIn-Y-bottom 0.5s;
+    width: 100%;
+}
+/* Base Styles for Desktop */
+.menu-container {
+    width: 100%;
+}
+.profile-container {
+    display: flex;
+    align-items: center;
+}
+.dashboard-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.sub-table {
+    width: 100%;
+}
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+    .menu-container {
+        font-size: 14px;
+    }
+    .profile-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .profile-container img {
+        width: 80%;
+        margin-bottom: 10px;
+    }
+    .profile-title,
+    .profile-subtitle {
+        margin: 0;
+    }
+    .dashboard-items {
+        flex-direction: column;
+        text-align: center;
+    }
+    .dashboard-items .btn-icon-back {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    .sub-table {
+        font-size: 14px;
+    }
+    .sub-table th,
+    .sub-table td {
+        padding: 1px;
+        text-align: left;
+    }
+    .scroll {
+        height: auto;
+        overflow-x: auto;
+    }
+    .menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .menu-btn {
+        width: 100%;
+        padding: 10px;
+    }
+    .filter-container p {
+        font-size: 18px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .input-text,
+    .login-btn {
+        width: 100%;
+        padding: 10px;
+    }
+    .menu-container {
+        font-size: 12px;
+    }
+    .dashboard-items {
+        width: 100%;
+    }
+    .dashboard-items .h1-dashboard,
+    .dashboard-items .h3-dashboard {
+        font-size: 16px;
+    }
+    .sub-table th,
+    .sub-table td {
+        font-size: 12px;
+    }
+    .menu-btn {
+        font-size: 12px;
+    }
+}

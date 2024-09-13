@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -34,6 +35,10 @@ class AdminController extends Controller
 
     public function patient()
     {
-        return view ('admin.patient');
+        // get the patient information in the user table
+        $patients = User::where('userRole', 'patient')->get();
+
+        // Pass to the view
+        return view ('admin.patient', compact('patients'));
     }
 }

@@ -22,7 +22,7 @@
   </tr>
 
         <tr class="menu-row">
-            <td class="menu-btn menu-icon-dashbord 
+            <td class="menu-btn menu-icon-dashbord
                 @if(Route::currentRouteName() === 'admin.dashboard') menu-active menu-icon-dashbord-active @endif">
                 <a href="{{ route('admin.dashboard') }}" class="non-style-link-menu 
                     @if(Route::currentRouteName() === 'admin.dashboard') non-style-link-menu-active @endif">
@@ -40,7 +40,7 @@
             </td>
         </tr>
         <tr class="menu-row">
-            <td class="menu-btn menu-icon-schedule 
+            <td class="menu-btn menu-icon-schedule
                 @if(Route::currentRouteName() === 'admin.schedule') menu-active @endif">
                 <a href="{{ route('admin.schedule') }}" class="non-style-link-menu 
                     @if(Route::currentRouteName() === 'admin.schedule') non-style-link-menu-active @endif">
@@ -48,8 +48,9 @@
                 </a>
             </td>
         </tr>
+
         <tr class="menu-row">
-            <td class="menu-btn menu-icon-appointment 
+            <td class="menu-btn menu-icon-appoinment
                 @if(Route::currentRouteName() === 'admin.appointment') menu-active @endif">
                 <a href="{{ route('admin.appointment') }}" class="non-style-link-menu 
                     @if(Route::currentRouteName() === 'admin.appointment') non-style-link-menu-active @endif">
@@ -57,8 +58,9 @@
                 </a>
             </td>
         </tr>
+
         <tr class="menu-row">
-            <td class="menu-btn menu-icon-patient 
+            <td class="menu-btn menu-icon-patient
                 @if(Route::currentRouteName() === 'admin.patient') menu-active @endif">
                 <a href="{{ route('admin.patient') }}" class="non-style-link-menu 
                     @if(Route::currentRouteName() === 'admin.patient') non-style-link-menu-active @endif">
@@ -66,5 +68,4 @@
                 </a>
             </td>
         </tr>
-  
 </table>
