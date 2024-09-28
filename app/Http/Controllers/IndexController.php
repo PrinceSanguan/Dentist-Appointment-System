@@ -9,7 +9,11 @@ class IndexController extends Controller
 {
     public function index()
     {
-        return view ('welcome');
+        $events = Event::all(['title', 'date']);
+    
+        $currentMonth = now()->format('F Y'); 
+
+        return view('welcome', compact('events', 'currentMonth'));
     }
 
     public function signin()
@@ -17,9 +21,4 @@ class IndexController extends Controller
         return view ('signin');
     }
 
-    // Function to return events as JSON
-    public function calendar() {
-        $events = Event::all();
-        return response()->json($events);
-    }
 }

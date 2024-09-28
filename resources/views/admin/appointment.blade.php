@@ -71,9 +71,9 @@
           // Get date in 'YYYY-MM-DD' format from FullCalendar cell
           var dateStr = info.date.toISOString().split('T')[0];
 
-          // For cells outside the current month, make them white
+          // For cells outside the current month, hide them
           if (info.isOtherMonth) {
-            info.el.style.backgroundColor = 'white';
+            info.el.style.visibility = 'hidden'; // Hide cells outside the current month
           } else if (eventDates[dateStr]) {
             // If the (one day earlier) date has an event, color it red
             info.el.style.backgroundColor = 'red';

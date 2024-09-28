@@ -56,7 +56,7 @@
                     <a class="nav-link" href="#contact">Contact</a>
                   </li>
                   <li class="nav-item mt-3 mt-lg-0">
-                    <a class="nav-link" href="">Calendar</a>
+                    <a class="nav-link" href="#calendar">Calendar</a>
                   </li>
                   <li class="nav-item mt-3 mt-lg-0">
                     <a class="nav-link" href="{{route('signin')}}">Sign in</a>
@@ -451,6 +451,74 @@
         </div>
     </section>
 
+        <div id="calendar">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title" style="color: black">
+                      <i class="far fa-calendar-alt"></i> Full Appointment Calendar - {{$currentMonth}}
+                    </h3>
+                  </div>
+                  <div class="card-body">
+                    <div id="fullCalendar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+    <link href="{{ asset('plugins/fullcalendar/main.min.css') }}" rel="stylesheet" />
+    <script src="{{ asset('plugins/fullcalendar/main.min.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var calendarEl = document.getElementById('fullCalendar');
+          var eventsData = @json($events); // Events data passed from the controller
+    
+          // Create an object to track event dates but subtract one day from each
+          var eventDates = {};
+          eventsData.forEach(event => {
+            // Parse event date and subtract one day
+            var eventDate = new Date(event.date);
+            eventDate.setDate(eventDate.getDate() - 1); // Subtract one day
+            var formattedDate = eventDate.toISOString().split('T')[0]; // Convert back to 'YYYY-MM-DD' format
+            eventDates[formattedDate] = true; // Store the new (one day earlier) date
+          });
+    
+          var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth'
+            },
+            events: eventsData.map(event => ({
+              title: event.title,
+              start: event.date // Keep the original event date for display
+            })),
+    
+            dayCellDidMount: function(info) {
+              // Get date in 'YYYY-MM-DD' format from FullCalendar cell
+              var dateStr = info.date.toISOString().split('T')[0];
+    
+              // For cells outside the current month, hide them
+              if (info.isOtherMonth) {
+                info.el.style.visibility = 'hidden'; // Hide cells outside the current month
+              } else if (eventDates[dateStr]) {
+                // If the (one day earlier) date has an event, color it red
+                info.el.style.backgroundColor = 'red';
+              } else {
+                // If no event on that day, color it green
+                info.el.style.backgroundColor = 'green';
+              }
+            },
+          });
+    
+          calendar.render();
+        });
+      </script>
+
     <section id="contact" class="footer_wrapper wrapper">
         <div class="container pb-3">
             <div class="row">
@@ -514,7 +582,12 @@
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script><!-- jQuery -->
+    <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{asset('dist/js/adminlte.min.js')}}"></script>
 
     <script src="js/main.js"></script>
 </body>
