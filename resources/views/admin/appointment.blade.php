@@ -43,12 +43,16 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var calendarEl = document.getElementById('fullCalendar');
-      var eventsData = @json($events);
+      var eventsData = @json($events); // Events data passed from the controller
 
-      // Create an object to track event dates in 'YYYY-MM-DD' format
+      // Create an object to track event dates but subtract one day from each
       var eventDates = {};
       eventsData.forEach(event => {
-        eventDates[new Date(event.date).toISOString().split('T')[0]] = true; // Normalize the date format
+        // Parse event date and subtract one day
+        var eventDate = new Date(event.date);
+        eventDate.setDate(eventDate.getDate() - 1); // Subtract one day
+        var formattedDate = eventDate.toISOString().split('T')[0]; // Convert back to 'YYYY-MM-DD' format
+        eventDates[formattedDate] = true; // Store the new (one day earlier) date
       });
 
       var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -60,16 +64,22 @@
         },
         events: eventsData.map(event => ({
           title: event.title,
-          start: event.date // Make sure event dates are in the correct format for FullCalendar
+          start: event.date // Keep the original event date for display
         })),
 
         dayCellDidMount: function(info) {
-          var dateStr = info.date.toISOString().split('T')[0]; // Get the date as 'YYYY-MM-DD'
-          
-          if (eventDates[dateStr]) {
-            info.el.style.backgroundColor = 'red'; // Mark the cell red if there's an event
+          // Get date in 'YYYY-MM-DD' format from FullCalendar cell
+          var dateStr = info.date.toISOString().split('T')[0];
+
+          // For cells outside the current month, make them white
+          if (info.isOtherMonth) {
+            info.el.style.backgroundColor = 'white';
+          } else if (eventDates[dateStr]) {
+            // If the (one day earlier) date has an event, color it red
+            info.el.style.backgroundColor = 'red';
           } else {
-            info.el.style.backgroundColor = 'green'; // Mark the cell green if no events
+            // If no event on that day, color it green
+            info.el.style.backgroundColor = 'green';
           }
         },
       });
