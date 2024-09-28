@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{asset('css/animations.css')}}">
-    <link rel="stylesheet" href="{{asset('css/finalmain.css')}}">
     <link rel="stylesheet" href="{{asset('css/signup.css')}}">
     <title>Create Account</title>
 
@@ -21,25 +19,19 @@
             <form action="{{route('signup-form')}}" method="post">
                 @csrf
                 <div class="label-td">
-                    <label for="newemail" class="form-label">First Name:</label>
+                    <label class="form-label">Full Name:</label>
                 </div>
                 <div class="label-td">
-                    <input type="text" name="firstName" class="input-text" placeholder="First Name" required>
+                    <input type="text" name="full_name" class="input-text" placeholder="Full Name" required>
                 </div>
                 <div class="label-td">
-                    <label for="newemail" class="form-label">Last Name:</label>
-                </div>
-                <div class="label-td">
-                    <input type="text" name="lastName" class="input-text" placeholder="Last Name" required>
-                </div>
-                <div class="label-td">
-                    <label for="newemail" class="form-label">Email:</label>
+                    <label class="form-label">Email:</label>
                 </div>
                 <div class="label-td">
                     <input type="email" name="email" class="input-text" placeholder="Email Address" required>
                 </div>
                 <div class="label-td">
-                    <label for="tele" class="form-label">Mobile Number:</label>
+                    <label class="form-label">Mobile Number:</label>
                 </div>
                 <div class="label-td">
                     <input type="number" name="number" class="input-text" placeholder="ex: 09071346898" required min="0">

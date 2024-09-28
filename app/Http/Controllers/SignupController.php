@@ -16,8 +16,7 @@ class SignupController extends Controller
     {
         // Validate the request data with custom error messages
         $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',  // Corrected typo
+            'full_name' => 'required|string|max:255',  // Corrected typo
             'email' => 'required|email',  // Email validation and uniqueness check
             'number' => 'required',  // Number validation for phone number
             'address' => 'required|string|max:255',
@@ -27,8 +26,7 @@ class SignupController extends Controller
     
         // Saving the user in the database
         $user = User::create([
-            'firstName' => $request->input('firstName'),
-            'lastName' => $request->input('lastName'),  // Corrected typo
+            'full_name' => $request->input('full_name'),  // Corrected typo
             'email' => $request->input('email'),
             'number' => $request->input('number'),
             'address' => $request->input('address'),
@@ -43,6 +41,6 @@ class SignupController extends Controller
         }
     
         // Redirect with success message if user is created successfully
-        return redirect()->route('signin')->with('success', 'Ikaw ay nakarehistro na!');
+        return redirect()->route('signin')->with('success', 'you are registered!');
     }
 }

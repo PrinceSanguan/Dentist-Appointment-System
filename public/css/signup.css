@@ -3,11 +3,10 @@ body {
     margin: 0;
     padding: 0;
     background: linear-gradient(to right, #ffff, #2575fc);
-    display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    overflow: hidden;
+    display: flex;
+    height: auto; /* Adjust height to 100% of the viewport height */
 }
 
 .main-container {
@@ -15,12 +14,13 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     display: flex;
-    width: 80%;
+    width: 100%;
     max-width: 600px;
     text-align: center;
     box-sizing: border-box;
     overflow: hidden;
     animation: transitionIn-X 0.5s;
+    height: 100%; /* Adjust height to 100% of the parent element's height */
 }
 
 .form-container {

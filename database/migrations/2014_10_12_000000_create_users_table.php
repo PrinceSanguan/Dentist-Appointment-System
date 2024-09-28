@@ -14,8 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('firstName');
-            $table->string('lastName');
+            $table->string('full_name');
             $table->string('email')->unique();
             $table->string('number');
             $table->string('address');
@@ -28,8 +27,7 @@ return new class extends Migration
         // Insert default data after the table has been created
         DB::table('users')->insert([
             [
-                'firstName' => 'admin',
-                'lastName' => 'admin',
+                'full_name' => 'admin',
                 'email' => 'admin@gmail.com',
                 'number' => '09123456789',
                 'address' => 'dyan lang po',

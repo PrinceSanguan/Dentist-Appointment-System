@@ -56,6 +56,9 @@
                     <a class="nav-link" href="#contact">Contact</a>
                   </li>
                   <li class="nav-item mt-3 mt-lg-0">
+                    <a class="nav-link" href="">Calendar</a>
+                  </li>
+                  <li class="nav-item mt-3 mt-lg-0">
                     <a class="nav-link" href="{{route('signin')}}">Sign in</a>
                   </li>
                   <li class="nav-item mt-3 mt-lg-0">
@@ -76,7 +79,7 @@
                         <h1>Better Dentistry</h1>
                         <p>Join us to a fun and friendly dental environment. Our professionals are working so hard
                             to see smile on your face that you deserve! We are dedicated about our duties.</p>
-                        <a href="signup.php" class="main-btn mt-4 fill-btn">Appointment</a>
+                        <a href="{{route('signup')}}" class="main-btn mt-4 fill-btn">Appointment</a>
                         <a href="#" class="main-btn mt-4 ms-3">Learn More</a>
                     </div>
                     <div class="col-md-6 order-md-2 order-1 mb-md-0 mb-5">
