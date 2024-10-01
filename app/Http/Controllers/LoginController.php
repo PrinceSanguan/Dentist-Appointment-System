@@ -23,12 +23,18 @@ class LoginController extends Controller
             $user = Auth::user();
 
             if ($user->userRole === 'admin') {
-                // Redirect to the admin dashbooard
+                // Redirect to the admin dashboard
                 return redirect()->route('admin.dashboard');
-            } /* elseif ($user->userRole === 'patient') {
-                // Redirect to the staff home
-                return redirect()->route('staff.home');
-            } */
+            } elseif ($user->userRole === 'patient') {
+                // Check if the patient's status is active
+                if ($user->status === 'active') {
+                    // Redirect to the patient dashboard
+                    return redirect()->route('patient.dashboard');
+                } else {
+                    // Redirect back with an error message
+                    return redirect()->route('signin')->with('error', 'Please wait for your approval account.');
+                }
+            }
 
             // Default redirect if role doesn't match
             return redirect()->route('signin')->with('error', 'Unauthorized access.');

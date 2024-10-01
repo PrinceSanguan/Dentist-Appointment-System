@@ -56,4 +56,32 @@ class AdminController extends Controller
         // Pass to the view
         return view ('admin.patient', compact('patients', 'currentDate'));
     }
+
+    public function updatePatientStatus(Request $request, $id)
+    {
+
+        // Find the patient by ID
+        $patient = User::findOrFail($id);
+    
+        // update the status from inactive to active
+        $patient->status = $patient->status == 'active' ? 'inactive' : 'active';
+
+        $patient->save();
+        
+    
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Patient status updated successfully');
+    }
+
+    public function patientDeleteAccount($id)
+    {
+        // Find the patient by ID
+        $patient = User::find($id);
+
+        // Delete the patient
+        $patient->delete();
+
+        // Redirect back with success message (optional)
+        return redirect()->back()->with('success', 'Account deleted successfully');
+    }
 }

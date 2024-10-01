@@ -32,7 +32,8 @@ class SignupController extends Controller
             'address' => $request->input('address'),
             'dob' => $request->input('dob'),  // dob is saved as it is
             'userRole' => 'patient',  // Assuming default role is 'patient'
-            'password' => bcrypt($request->input('password')),  // Encrypt the password
+            'password' => bcrypt($request->input('password')),
+            'status' => 'inactive',  // Encrypt the password
         ]);
     
         // Check if user creation was successful

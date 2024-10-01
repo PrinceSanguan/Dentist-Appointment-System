@@ -8,6 +8,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PatientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,9 +35,15 @@ Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.d
 Route::get('/admin/dentist', [AdminController::class, 'dentist'])->name('admin.dentist');
 Route::get('/admin/schedule', [AdminController::class, 'schedule'])->name('admin.schedule');
 Route::get('/admin/appointment', [AdminController::class, 'appointment'])->name('admin.appointment');
-Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
 
+Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
+Route::patch('/admin/patient/{id}', [AdminController::class, 'updatePatientStatus'])->name('admin.update-status');
+Route::post('/admin/patient/delete/{id}', [AdminController::class, 'patientDeleteAccount'])->name('admin.patient-delete');
 /**Admin Route */
+
+/**Patient Route */
+Route::get('/patient/dashboard', [PatientController::class, 'index'])->name('patient.dashboard');
+/**Patient Route */
 
     /******************************************** This Route is For Logout *****************************/
     Route::get('/logout', function (Request $request) {
