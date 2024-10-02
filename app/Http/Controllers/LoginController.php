@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Audit;
 
 class LoginController extends Controller
 {
@@ -14,17 +15,26 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-
+    
         // Attempt to log in the user
         $credentials = $request->only('email', 'password');
-
+    
         if (Auth::attempt($credentials)) {
             // Authentication passed, now check the user's role
             $user = Auth::user();
-
+    
+            // Create a logs entry
+            Audit::create([
+                'user_id' => $user->id, // Add the user ID of the logged-in user
+                'updated_at' => null    // Explicitly set updated_at to null
+            ]);
+    
             if ($user->userRole === 'admin') {
                 // Redirect to the admin dashboard
                 return redirect()->route('admin.dashboard');
+            } elseif ($user->userRole === 'assistant') {
+                // Redirect to the assistant dashboard
+                return redirect()->route('assistant.dashboard');
             } elseif ($user->userRole === 'patient') {
                 // Check if the patient's status is active
                 if ($user->status === 'active') {
@@ -35,7 +45,7 @@ class LoginController extends Controller
                     return redirect()->route('signin')->with('error', 'Please wait for your approval account.');
                 }
             }
-
+    
             // Default redirect if role doesn't match
             return redirect()->route('signin')->with('error', 'Unauthorized access.');
         } else {

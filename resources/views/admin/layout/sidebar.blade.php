@@ -45,7 +45,7 @@
 
         <!-- Assistant -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
-            <a href="" class="nav-link ">
+            <a href="{{ route('admin.assistant') }}" class="nav-link {{ Route::is('admin.assistant') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-user-nurse"></i>
                 <p>
                     Assistant
@@ -55,7 +55,7 @@
 
         <!-- Audit Logs -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
-            <a href="" class="nav-link ">
+            <a href="{{ route('admin.audit-logs') }}" class="nav-link {{ Route::is('admin.audit-logs') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-clipboard-list"></i>
                 <p>
                     Audit Logs

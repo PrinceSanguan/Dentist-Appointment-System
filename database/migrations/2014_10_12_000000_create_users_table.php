@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('number');
             $table->string('address');
             $table->date('dob');
-            $table->enum('userRole', ['admin', 'patient', 'dentist']);
+            $table->enum('userRole', ['admin', 'patient', 'dentist', 'assistant']);
             $table->string('password');
             $table->enum('status', ['active', 'inactive']);
             $table->timestamps();

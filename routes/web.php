@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SignupController;
@@ -37,8 +34,14 @@ Route::get('/admin/dentist', [AdminController::class, 'dentist'])->name('admin.d
 Route::post('/admin/dentist', [AdminController::class, 'addDentistAccount'])->name('admin.add-dentist');
 Route::post('/admin/dentist/delete/{id}', [AdminController::class, 'dentistDeleteAccount'])->name('admin.dentist-delete');
 
+Route::get('/admin/assistant', [AdminController::class, 'assistant'])->name('admin.assistant');
+Route::post('/admin/assistant', [AdminController::class, 'addAssistantAccount'])->name('admin.add-assistant');
+Route::post('/admin/assistant/delete/{id}', [AdminController::class, 'assistantDeleteAccount'])->name('admin.assistant-delete');
+
 Route::get('/admin/schedule', [AdminController::class, 'schedule'])->name('admin.schedule');
 Route::get('/admin/appointment', [AdminController::class, 'appointment'])->name('admin.appointment');
+
+Route::get('/admin/audit-logs', [AdminController::class, 'auditLogs'])->name('admin.audit-logs');
 
 Route::get('/admin/patient', [AdminController::class, 'patient'])->name('admin.patient');
 Route::patch('/admin/patient/{id}', [AdminController::class, 'updatePatientStatus'])->name('admin.update-status');
@@ -49,11 +52,6 @@ Route::post('/admin/patient/delete/{id}', [AdminController::class, 'patientDelet
 Route::get('/patient/dashboard', [PatientController::class, 'index'])->name('patient.dashboard');
 /**Patient Route */
 
-    /******************************************** This Route is For Logout *****************************/
-    Route::get('/logout', function (Request $request) {
-      Session::flush();
-      Auth::logout();
-  
-      return redirect()->route('signin');
-  })->name('logout');
-  /******************************************** This Route is For Logout *****************************/
+/**Logout Route */
+Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
+/**Logout Route */

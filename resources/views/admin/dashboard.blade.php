@@ -47,7 +47,7 @@
           <!-- small card -->
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>5</h3>
+              <h3>{{$dentist}}</h3>
               <p>Total Dentist Account</p>
             </div>
             <div class="icon">
@@ -81,7 +81,7 @@
           <!-- small card -->
           <div class="small-box bg-primary">
             <div class="inner">
-              <h3>5</h3>
+              <h3>{{$assistant}}</h3>
               <p>Total Assistant Account</p>
             </div>
             <div class="icon">
