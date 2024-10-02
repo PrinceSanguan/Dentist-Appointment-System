@@ -32,7 +32,11 @@ Route::post('/signin', [LoginController::class, 'loginForm'])->name('login-form'
 
 /**Admin Route */
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
 Route::get('/admin/dentist', [AdminController::class, 'dentist'])->name('admin.dentist');
+Route::post('/admin/dentist', [AdminController::class, 'addDentistAccount'])->name('admin.add-dentist');
+Route::post('/admin/dentist/delete/{id}', [AdminController::class, 'dentistDeleteAccount'])->name('admin.dentist-delete');
+
 Route::get('/admin/schedule', [AdminController::class, 'schedule'])->name('admin.schedule');
 Route::get('/admin/appointment', [AdminController::class, 'appointment'])->name('admin.appointment');
 

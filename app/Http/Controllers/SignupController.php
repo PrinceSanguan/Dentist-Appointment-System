@@ -16,24 +16,24 @@ class SignupController extends Controller
     {
         // Validate the request data with custom error messages
         $request->validate([
-            'full_name' => 'required|string|max:255',  // Corrected typo
-            'email' => 'required|email',  // Email validation and uniqueness check
-            'number' => 'required',  // Number validation for phone number
+            'full_name' => 'required|string|max:255',  
+            'email' => 'required|email|unique:users',  
+            'number' => 'required',  
             'address' => 'required|string|max:255',
-            'dob' => 'required',  // Ensure dob is a valid date
+            'dob' => 'required',  
             'password' => 'required|confirmed',
         ]);
     
-        // Saving the user in the database
+        // If email does not exist, proceed to create the user
         $user = User::create([
-            'full_name' => $request->input('full_name'),  // Corrected typo
+            'full_name' => $request->input('full_name'),  
             'email' => $request->input('email'),
             'number' => $request->input('number'),
             'address' => $request->input('address'),
-            'dob' => $request->input('dob'),  // dob is saved as it is
-            'userRole' => 'patient',  // Assuming default role is 'patient'
+            'dob' => $request->input('dob'),  
+            'userRole' => 'patient',  
             'password' => bcrypt($request->input('password')),
-            'status' => 'inactive',  // Encrypt the password
+            'status' => 'inactive',  
         ]);
     
         // Check if user creation was successful
@@ -42,6 +42,6 @@ class SignupController extends Controller
         }
     
         // Redirect with success message if user is created successfully
-        return redirect()->route('signin')->with('success', 'you are registered!');
+        return redirect()->route('signin')->with('success', 'You are registered!');
     }
 }

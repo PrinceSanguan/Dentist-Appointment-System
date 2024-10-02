@@ -1,100 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{asset('css/animations.css')}}">  
-    <link rel="stylesheet" href="{{asset('css/main.css')}}">  
-    <link rel="stylesheet" href="{{asset('css/admin.css')}}">
-    <link rel="stylesheet" href="{{asset('css/dentist.css')}}">
-        
-    <title>Dentists</title>
-</head>
-<body>
+@include('admin.layout.header')
 
-    <div class="container">
-        <div class="menu">
-          @include('admin.sidenav');
-        </div>
-        <div class="dash-body">
-            <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
-                <tr >
-                    <td width="13%">
-                        <a href="index.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a>
-                    </td>
-                    <td> 
-                      <form action="" method="post" class="header-search">
-                          <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Dentist name or Email" list="doctors">&nbsp;&nbsp;
-                          <input type="Submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                      </form>
-                    </td>
-                    <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">
-                            {{$currentDate}}
-                        </p>
-                    </td>
-                    <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center; margin-right 10px"><img src="../img/calendar.svg" width="100%"></button>
-                    </td>
-                </tr>
-               
-                <tr >
-                    <td colspan="2" style="padding-top:30px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Add New Dentist</p>
-                    </td>
-                    <td colspan="2">
-                        <a href="?action=add&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="display: flex;justify-content: center;align-items: center;margin-left:75px;background-image: url('../img/icons/add.svg');">Add New</font></button>
-                            </a></td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Dentists </p>
-                    </td>
-                    
-                </tr>
-                  
-                <tr>
-                   <td colspan="4">
-                       <center>
-                        <div class="abc scroll">
-                        <table width="93%" class="sub-table scrolldown" border="0">
-                        <thead>
-                        <tr>
-                                <th class="table-headin">
-                                    
-                                
-                                Dentist Name
-                                
-                                </th>
-                                <th class="table-headin">
-                                    Email
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Specialties
-                                    
-                                </th>
-                                <th class="table-headin">
-                                    
-                                    Events
-                                    
-                                </tr>
-                        </thead>
-                        <tbody>
-                        
-                            </tbody>
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
 
-                        </table>
-                        </div>
-                        </center>
-                   </td> 
-                </tr>
-       
-            </table>
+    @include('admin.layout.navbar')
+
+    @include('admin.layout.sidebar')
+
+    <!-------------------------------------- Main content ---------------------------------------->
+
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title" style="font-size: 2em">Dentist's List</h3>
+              <!-- Add New Account Button -->
+              <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addAccountModal">
+                Add Dentist Account
+              </button>
+            </div>
+            <div class="card-body">
+              <table id="dentistTable" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($dentists as $dentist)
+                    <tr>
+                      <td>{{ $dentist->full_name }}</td>
+                      <td>{{ $dentist->email }}</td>
+                      <td>{{ $dentist->status }}</td>
+                      <td>
+                        {{-- <a href=" {{ route('patients.view', $patient->id) }}" class="btn btn-success">View</a> --}}
+                        <form action="{{ route('admin.dentist-delete', $dentist->id) }}" method="post" style="display:inline;">
+                          @csrf
+                          <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this patient?');">Delete</button>
+                        </form>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
+  <!-- Modal for Adding New Account -->
+  <div class="modal fade" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addAccountModalLabel">Add Dentist Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="addDentistForm">
+          @csrf
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="fullName">Full Name</label>
+              <input type="text" class="form-control" id="fullName" name="full_name" required>
+              <span class="text-danger error-text full_name_error"></span>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+              <span class="text-danger error-text email_error"></span>
+            </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input type="text" class="form-control" id="address" name="address" required>
+              <span class="text-danger error-text address_error"></span>
+            </div>
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input type="date" class="form-control" id="dob" name="dob" required>
+              <span class="text-danger error-text dob_error"></span>
+            </div>
+            <div class="form-group">
+              <label for="number">Mobile Number</label>
+              <input type="number" class="form-control" id="number" name="number" required min="0">
+              <span class="text-danger error-text number_error"></span>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+              <span class="text-danger error-text password_error"></span>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" required>
+              <span class="text-danger error-text password_confirmation_error"></span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+        $(document).ready(function() {
+        // On form submit, prevent the default action and use AJAX
+        $('#addDentistForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            
+            let formData = new FormData(this);
+            
+            // Clear previous errors
+            $('span.error-text').text('');
+
+            $.ajax({
+                url: "{{ route('admin.add-dentist') }}", // Laravel route to handle the request
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.success === true) {
+                        // If dentist is added successfully, show a success message and close the modal
+                        $('#addAccountModal').modal('hide');
+                        alert('Dentist account has been registered successfully!');
+                        location.reload(); // Refresh the page to show updated data
+                    }
+                },
+                error: function(response) {
+                    // If there's an error, show the validation errors
+                    if (response.status === 422) {
+                        let errors = response.responseJSON.errors;
+                        $.each(errors, function(field, error) {
+                            $('span.' + field + '_error').text(error[0]);
+                        });
+                    }
+                }
+            });
+        });
+    });
+  </script>
+
+    @include('admin.layout.footer')
+  </div>
+
+  <!-- Include DataTables CSS and JS -->
+  <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+
+  <!-- Include Bootstrap JS for Modal -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    $(function () {
+      $("#dentistTable").DataTable({
+        responsive: true,
+        autoWidth: false,
+      });
+    });
+  </script>
+
+  <!----Sweet Alert---->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      @if (session('success'))
+          Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: '{{ session('success') }}',
+              confirmButtonText: 'OK'
+          });
+      @endif
+
+      @if (session('error'))
+          Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: '{{ session('error') }}',
+              confirmButtonText: 'Try Again'
+          });
+      @endif
+  });
+</script>
 </body>
 </html>

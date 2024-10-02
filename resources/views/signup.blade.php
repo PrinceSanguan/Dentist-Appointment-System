@@ -23,36 +23,54 @@
                 </div>
                 <div class="label-td">
                     <input type="text" name="full_name" class="input-text" placeholder="Full Name" required>
+                    @error('full_name')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="label-td">
                     <label class="form-label">Email:</label>
                 </div>
                 <div class="label-td">
                     <input type="email" name="email" class="input-text" placeholder="Email Address" required>
+                    @error('email')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="label-td">
                     <label class="form-label">Mobile Number:</label>
                 </div>
                 <div class="label-td">
                     <input type="number" name="number" class="input-text" placeholder="ex: 09071346898" required min="0">
+                    @error('number')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="label-td">
                     <label class="form-label">Address:</label>
                 </div>
                 <div class="label-td">
                     <input type="text" name="address" class="input-text" placeholder="Address" required>
+                    @error('address')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="label-td">
                     <label class="form-label">Date of Birth:</label>
                 </div>
                 <div class="label-td">
                     <input type="date" name="dob" class="input-text" placeholder="Date of Birth" required>
+                    @error('dob')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="label-td">
                     <label class="form-label">Create New Password:</label>
                 </div>
                 <div class="label-td">
                     <input type="password" name="password" class="input-text" placeholder="New Password" required>
+                    @error('password')
+                    <div class="text-danger">{{ $message }}</div>
+                  @enderror
                 </div>
                 
                 <div class="label-td">
@@ -60,6 +78,9 @@
                 </div>
                 <div class="label-td">
                     <input type="password" name="password_confirmation" class="input-text" placeholder="Confirm Password" required>
+                    @error('password_confirmation')
+                    <div class="text-danger">{{ $message }}</div>
+                  @enderror
                 </div>
                 
                 <div>

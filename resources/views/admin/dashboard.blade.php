@@ -64,7 +64,7 @@
           <!-- small card -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>5</h3>
+              <h3>{{$pendingAccount}}</h3>
               <p>Total Pending Account</p>
             </div>
             <div class="icon">
