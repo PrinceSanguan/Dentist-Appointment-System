@@ -23,11 +23,11 @@
         <div class="col-lg-12">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title" style="font-size: 2em">Dentist's List</h3>
+              <h3 class="card-title" style="font-size: 2em">Audit Logs</h3>
               <!-- Add New Account Button -->
             </div>
             <div class="card-body">
-                <table class="table table-bordered table-striped">
+                <table id="logsTable" class="table table-bordered table-striped">
                   <thead>
                       <tr>
                           <th>Full Name</th>
@@ -74,7 +74,7 @@
 
   <script>
     $(function () {
-      $("#dentistTable").DataTable({
+      $("#logsTable").DataTable({
         responsive: true,
         autoWidth: false,
       });

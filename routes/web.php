@@ -54,4 +54,5 @@ Route::get('/patient/dashboard', [PatientController::class, 'index'])->name('pat
 
 /**Logout Route */
 Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
+Route::get('/logout/patient', [PatientController::class, 'logout'])->name('patient.logout');
 /**Logout Route */

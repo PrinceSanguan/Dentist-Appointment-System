@@ -23,12 +23,16 @@ class LoginController extends Controller
             // Authentication passed, now check the user's role
             $user = Auth::user();
     
-            // Create a logs entry
-            Audit::create([
-                'user_id' => $user->id, // Add the user ID of the logged-in user
-                'updated_at' => null    // Explicitly set updated_at to null
-            ]);
+            // Check if user's status is active
+            if ($user->status === 'active') {
+                // Create an audit log entry
+                Audit::create([
+                    'user_id' => $user->id, // Add the user ID of the logged-in user
+                    'updated_at' => null    // Explicitly set updated_at to null
+                ]);
+            }
     
+            // Role-based redirection
             if ($user->userRole === 'admin') {
                 // Redirect to the admin dashboard
                 return redirect()->route('admin.dashboard');
