@@ -43,7 +43,7 @@
                       <td>{{ $patient->email }}</td>
                       <td>{{ $patient->status }}</td>
                       <td>
-                        <a href="{{-- {{ route('patients.view', $patient->id) }} --}}" class="btn btn-success">View</a>
+                        <a href="#" class="btn btn-success view-patient" data-id="{{ $patient->id }}">View</a>
                         <form action="{{ route('admin.patient-delete', $patient->id) }}" method="post" style="display:inline;">
                           @csrf
                           <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this patient?');">Delete</button>
@@ -67,6 +67,26 @@
         </div>
       </div>
     </div>
+
+    <!-- Patient Details Modal -->
+  <div class="modal fade" id="patientDetailsModal" tabindex="-1" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patientDetailsModalLabel">Patient Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="patientDetailsContent">
+                <!-- Patient details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
     <!-------------------------------------- Main content ---------------------------------------->
 
     @include('admin.layout.footer')
@@ -88,5 +108,33 @@
       });
     });
   </script>
+
+<script>
+  $(document).ready(function() {
+      $('.view-patient').on('click', function(event) {
+          event.preventDefault(); // Prevent default anchor behavior
+          var patientId = $(this).data('id'); // Get the patient ID
+  
+          $.ajax({
+              url: '{{ route('patients.view', '') }}/' + patientId, // Construct the URL
+              type: 'GET',
+              success: function(response) {
+                  // Populate the modal with patient details
+                  $('#patientDetailsContent').html(response.html);
+                  $('#patientDetailsModal').modal('show'); // Show the modal
+              },
+              error: function() {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Oops!',
+                      text: 'There was an error fetching patient details. Please try again.',
+                      confirmButtonText: 'OK'
+                  });
+              }
+          });
+      });
+  });
+  </script>
+  
 </body>
 </html>

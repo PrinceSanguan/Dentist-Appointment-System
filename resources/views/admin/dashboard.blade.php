@@ -93,6 +93,23 @@
           </div>
         </div>
 
+        <!-- Total Number of Concern -->
+        <div class="col-lg-12 col-12">
+          <!-- small card -->
+          <div class="small-box bg-primary">
+            <div class="inner">
+              <h3>{{$openConcern}}</h3>
+              <p>Total Number of Open Concern</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-exclamation-triangle"></i> <!-- Changed to assistant/nurse icon -->
+            </div>
+            <a href="{{route('admin.concern')}}" class="small-box-footer">
+              More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
     <!-------------------------------------- Main content ---------------------------------------->

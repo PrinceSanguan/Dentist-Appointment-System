@@ -65,7 +65,7 @@
                 <div class="icon">
                   <i class="fas fa-user-edit"></i>
                 </div>
-                <a href="#" class="small-box-footer">Edit Profile <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{route('patient.settings')}}" class="small-box-footer">Edit Profile <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
           </div>

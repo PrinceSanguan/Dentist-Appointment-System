@@ -1,11 +1,11 @@
-@include('admin.layout.header')
+@include('patient.layout.header')
 
 <body class="hold-transition sidebar-mini">
   <div class="wrapper">
 
-    @include('admin.layout.navbar')
+    @include('patient.layout.navbar')
 
-    @include('admin.layout.sidebar')
+    @include('patient.layout.sidebar')
 
     <!-------------------------------------- Main content ---------------------------------------->
 
@@ -23,36 +23,26 @@
         <div class="col-lg-12">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title" style="font-size: 2em">Audit Logs</h3>
-              <!-- Add New Account Button -->
+              <h3 class="card-title" style="font-size: 2em">Dentist's List</h3>
             </div>
             <div class="card-body">
-                <table id="logsTable" class="table table-bordered table-striped">
-                  <thead>
-                      <tr>
-                          <th>Full Name</th>
-                          <th>User Role</th>
-                          <th>Time of Login</th>
-                          <th>Time of Logout</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      @foreach ($logs as $log)
-                          <tr>
-                              <td>{{ $log->user->full_name }}</td> <!-- Access to user relationship -->
-                              <td>{{ $log->user->userRole }}</td>
-                              <td>{{ \Carbon\Carbon::parse($log->created_at)->format('F j, Y - g:ia') }}</td>
-                              <td>
-                                  @if ($log->created_at->ne($log->updated_at)) <!-- Check if created_at and updated_at are different -->
-                                      {{ \Carbon\Carbon::parse($log->updated_at)->format('F j, Y - g:ia') }}
-                                  @else
-                                      <!-- Show a placeholder or nothing if they are the same -->
-                                      -
-                                  @endif
-                              </td>
-                          </tr>
-                      @endforeach
-                  </tbody>
+              <table id="dentistTable" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($dentists as $dentist)
+                    <tr>
+                      <td>{{ $dentist->full_name }}</td>
+                      <td>{{ $dentist->email }}</td>
+                      <td>{{ $dentist->status }}</td>
+                    </tr>
+                  @endforeach
+                </tbody>
               </table>
             </div>
           </div>
@@ -60,7 +50,7 @@
       </div>
     </div>
 
-    @include('admin.layout.footer')
+    @include('patient.layout.footer')
   </div>
 
   <!-- Include DataTables CSS and JS -->
@@ -76,14 +66,14 @@
 
   <script>
     $(function () {
-      $("#logsTable").DataTable({
+      $("#dentistTable").DataTable({
         responsive: true,
         autoWidth: false,
       });
     });
   </script>
 
-  <!----Sweet Alert---->
+<!----Sweet Alert---->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>

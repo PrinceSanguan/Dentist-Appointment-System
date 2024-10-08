@@ -63,6 +63,16 @@
             </a>
         </li>
 
+        <!-- Concern -->
+        <li class="nav-item menu-open" style="margin-bottom: 10px;">
+            <a href="{{ route('admin.concern') }}" class="nav-link {{ Route::is('admin.concern') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-exclamation-triangle"></i> <!-- Updated icon -->
+                <p>
+                    Concern
+                </p>
+            </a>
+        </li>
+
         <!-- Appointment -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
             <a href="{{ route('admin.appointment') }}" class="nav-link {{ Route::is('admin.appointment') ? 'active' : '' }}">

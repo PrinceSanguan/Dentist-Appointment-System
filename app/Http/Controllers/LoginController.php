@@ -27,31 +27,42 @@ class LoginController extends Controller
             if ($user->status === 'active') {
                 // Create an audit log entry
                 Audit::create([
-                    'user_id' => $user->id, // Add the user ID of the logged-in user
-                    'updated_at' => null    // Explicitly set updated_at to null
+                    'user_id' => $user->id,     // Add the user ID of the logged-in user
+                    'updated_at' => null        // Explicitly set updated_at to null
                 ]);
-            }
     
-            // Role-based redirection
-            if ($user->userRole === 'admin') {
-                // Redirect to the admin dashboard
-                return redirect()->route('admin.dashboard');
-            } elseif ($user->userRole === 'assistant') {
-                // Redirect to the assistant dashboard
-                return redirect()->route('assistant.dashboard');
-            } elseif ($user->userRole === 'patient') {
-                // Check if the patient's status is active
-                if ($user->status === 'active') {
-                    // Redirect to the patient dashboard
-                    return redirect()->route('patient.dashboard');
-                } else {
-                    // Redirect back with an error message
-                    return redirect()->route('signin')->with('error', 'Please wait for your approval account.');
+                // Role-based redirection
+                switch ($user->userRole) {
+                    case 'admin':
+                        // Redirect to the admin dashboard
+                        return redirect()->route('admin.dashboard');
+    
+                    case 'assistant':
+                        // Redirect to the assistant dashboard
+                        return redirect()->route('assistant.dashboard');
+    
+                    case 'dentist':
+                        // Redirect to the dentist dashboard
+                        return redirect()->route('dentist.dashboard');
+    
+                    case 'patient':
+                        // Check if the patient's status is active
+                        if ($user->status === 'active') {
+                            // Redirect to the patient dashboard
+                            return redirect()->route('patient.dashboard');
+                        } else {
+                            // Redirect back with an error message
+                            return redirect()->route('signin')->with('error', 'Please wait for your account approval.');
+                        }
+    
+                    default:
+                        // Default redirect if role doesn't match
+                        return redirect()->route('signin')->with('error', 'Unauthorized access.');
                 }
+            } else {
+                // If user's status is not active, redirect with an error message
+                return redirect()->route('signin')->with('error', 'Your account is not active.');
             }
-    
-            // Default redirect if role doesn't match
-            return redirect()->route('signin')->with('error', 'Unauthorized access.');
         } else {
             // Authentication failed, redirect back with error message
             return redirect()->route('signin')->with('error', 'Invalid email or password.');

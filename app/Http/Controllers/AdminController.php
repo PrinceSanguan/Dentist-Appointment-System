@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Audit;
+use App\Models\ConcernBox;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -25,8 +26,9 @@ class AdminController extends Controller
         $pendingAccount = User::where('status', 'inactive')->count();
         $dentist = User::where('userRole', 'dentist')->count();
         $assistant = User::where('userRole', 'assistant')->count();
+        $openConcern = ConcernBox::where('status', 'open')->count();
 
-        return view('admin.dashboard', compact('totalPatients', 'currentDate', 'pendingAccount', 'dentist', 'assistant'));
+        return view('admin.dashboard', compact('totalPatients', 'currentDate', 'pendingAccount', 'dentist', 'assistant', 'openConcern'));
     }
 
     public function dentist()
@@ -62,6 +64,24 @@ class AdminController extends Controller
 
         // Pass to the view
         return view ('admin.patient', compact('patients', 'currentDate'));
+    }
+
+    public function viewPatient($id)
+    {
+        $patient = User::findOrFail($id); // Fetch patient details
+
+        // Create an HTML snippet to return
+        $html = '
+            <div>
+                <h4>Name: ' . $patient->full_name . '</h4>
+                <p>Email: ' . $patient->email . '</p>
+                <p>Phone: ' . $patient->number . '</p>
+                <p>Address: ' . $patient->address . '</p>
+                <!-- Add more patient details as needed -->
+            </div>
+        ';
+
+        return response()->json(['html' => $html]);
     }
 
     public function updatePatientStatus(Request $request, $id)
@@ -222,4 +242,37 @@ class AdminController extends Controller
         // If user is not logged in, redirect with an error message
         return redirect()->route('signin')->with('error', 'You are not logged in.');
     }
+
+    public function concern()
+    {
+        $currentDate = date('F j, Y');
+        $concerns = ConcernBox::all();
+
+        return view ('admin.concern', compact('currentDate', 'concerns'));
+    }
+
+    public function concernReply(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'concern_id' => 'required|exists:concern_boxes,id',  // Ensure the concern exists
+            'reply' => 'required|string|max:255',                // Validate the reply
+        ]);
+
+        // Find the concern by ID
+        $concern = ConcernBox::find($request->input('concern_id'));
+
+        // Update the reply
+        $concern->reply = $request->input('reply');
+        $concern->status = 'close';
+        $concern->save();  // Save the updated reply to the database
+
+        // Return a JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Reply saved successfully.',
+            'concern' => $concern,
+        ]);
+    }
 }
+

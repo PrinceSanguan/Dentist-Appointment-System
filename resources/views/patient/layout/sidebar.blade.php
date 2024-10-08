@@ -25,7 +25,7 @@
   
         <!-- Appointment -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
-            <a href="" class="nav-link ">
+          <a href="{{ route('patient.appointment') }}" class="nav-link {{ Route::is('patient.appointment') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-user-md"></i>
                 <p>
                     My Appointments
@@ -33,9 +33,19 @@
             </a>
         </li>
 
+        <!-- Concern -->
+        <li class="nav-item menu-open" style="margin-bottom: 10px;">
+          <a href="{{ route('patient.concern') }}" class="nav-link {{ Route::is('patient.concern') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-exclamation-triangle"></i> <!-- Updated icon -->
+              <p>
+                  Concern
+              </p>
+          </a>
+        </li>
+
         <!-- Dentist -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
-            <a href="{{ route('admin.patient') }}" class="nav-link {{ Route::is('admin.patient') ? 'active' : '' }}">
+            <a href="{{ route('patient.dentist') }}" class="nav-link {{ Route::is('patient.dentist') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
                     Dentist
@@ -45,7 +55,7 @@
 
         <!-- Settings -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
-            <a href="" class="nav-link ">
+          <a href="{{ route('patient.settings') }}" class="nav-link {{ Route::is('patient.settings') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-clipboard-list"></i>
                 <p>
                     Settings
