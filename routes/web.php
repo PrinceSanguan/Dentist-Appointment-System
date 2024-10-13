@@ -78,9 +78,15 @@ Route::get('/assistant/dashboard', [AssistantController::class, 'index'])->name(
 
 /**Dentist Route */
 Route::get('/dentist/dashboard', [DentistController::class, 'index'])->name('dentist.dashboard');
+Route::get('/dentist/settings', [DentistController::class, 'settings'])->name('dentist.settings');
+
+Route::post('/delete/delete-account', [DentistController::class, 'userDelete'])->name('dentist.delete-account');
+Route::post('/dentist/settings', [DentistController::class, 'editDentistProfile'])->name('dentist.edit-profile');
+Route::post('/dentist/settings/change-password', [DentistController::class, 'dentistChangePassword'])->name('dentist.change-password');
 /**Dentist Route */
 
 /**Logout Route */
 Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
 Route::get('/logout/patient', [PatientController::class, 'logout'])->name('patient.logout');
+Route::get('/logout/dentist', [PatientController::class, 'logout'])->name('dentist.logout');
 /**Logout Route */

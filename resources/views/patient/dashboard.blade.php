@@ -296,9 +296,113 @@
                               <td colspan="2" style="background-color: yellow; text-align: center"><strong>*subsequent increase in price depending on the number of missing teeth</strong></td>
                             </tr>
                             <tr>
-                              <td>Flex(unilateral)</td>
-                              <td>min ₱4000.00</td>
+                              <td>Flexible Denture(unilateral)</td>
+                              <td>₱8000.00-₱10000.00</td>
                             </tr>
+                            <tr>
+                              <td>Flexible Denture(bilateral)</td>
+                              <td>₱15000.00-₱20000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Goldmesh (additional)</td>
+                              <td>₱3000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Reline (per arch)</td>
+                              <td>₱3000.00</td>
+                            </tr> <tr>
+                              <td>Rebase (per arch)</td>
+                              <td>₱5000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Repair</td>
+                              <td>min ₱1000.00</td>
+                            </tr> 
+                            <tr>
+                              <td colspan="2" style="background-color: green; text-align: center"><strong>Complete Denture</strong></td>
+                            </tr>
+                            <tr>
+                              <td>New Ace/Naturatone</td>
+                              <td>₱12000.00-₱15000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>New Ace PX</td>
+                              <td>₱20000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Biotone</td>
+                              <td>₱24000.00-₱25000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Bioform</td>
+                              <td>₱24000.00-₱25000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Ivocap</td>
+                              <td>₱50000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Thermosens</td>
+                              <td>₱60000.00</td>
+                            </tr> 
+                            <tr>
+                              <td colspan="2" style="background-color: green; text-align: center"><strong>Orthodontics</strong></td>
+                            </tr>
+                            <tr>
+                              <td>Metal Brackets</td>
+                              <td>₱50000.00-₱60000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Ceramic Brackets</td>
+                              <td>₱80000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Self-Ligating Brackets (metal)</td>
+                              <td>₱100000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Self-Ligating Brackets (ceramic)</td>
+                              <td>₱120000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Invisalign</td>
+                              <td>₱250000.00-₱350000.00</td>
+                            </tr>
+                            <tr>
+                              <td>Functional Appliance</td>
+                              <td>₱20000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Hawley's Retainers</td>
+                              <td>₱10000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Clear Aligners</td>
+                              <td>₱14000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Fixed Retainers</td>
+                              <td>₱10000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Tads</td>
+                              <td>₱7000.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Recementation (brackets&bands)</td>
+                              <td>₱500.00</td>
+                            </tr> 
+                            <tr>
+                              <td>Replacement (brackets&bands)</td>
+                              <td>₱700.00-₱1000.00</td>
+                            </tr> 
+                            <tr>
+                              <td colspan="2" style="background-color: yellow; text-align: center"><strong>*50% Down Payment for Ortho Treatment</strong></td>
+                            </tr>
+                            <tr>
+                              <td>TMJ (case to case basis)</td>
+                              <td>min ₱45000.00</td>
+                            </tr> 
                         </tbody>
                     </table>
                     <div class="row mt-5">
