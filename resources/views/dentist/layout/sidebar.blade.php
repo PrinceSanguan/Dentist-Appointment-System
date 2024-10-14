@@ -28,7 +28,7 @@
 
         <!-- My Session -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
-          <a href="" class="nav-link ">
+          <a href="{{ route('dentist.session') }}" class="nav-link {{ Route::is('dentist.session') ? 'active' : '' }}">
               <i class="nav-icon fas fa-clock"></i>
               <p>My Session</p>
           </a>

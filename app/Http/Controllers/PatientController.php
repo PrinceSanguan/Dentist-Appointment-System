@@ -13,6 +13,11 @@ use App\Models\ConcernBox;
 
 class PatientController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkPatient');
+    }
+
     public function index()
     {
         $currentDate = date('F j, Y');

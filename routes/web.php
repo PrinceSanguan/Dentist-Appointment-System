@@ -74,12 +74,23 @@ Route::post('/patient/delete-account', [PatientController::class, 'userDelete'])
 
 /**Assistant Route */
 Route::get('/assistant/dashboard', [AssistantController::class, 'index'])->name('assistant.dashboard');
+
+Route::get('/assistant/appointment-request', [AssistantController::class, 'appointmentRequest'])->name('assistant.appointment-request');
+Route::get('/assistant/pending-account', [AssistantController::class, 'pendingAccount'])->name('assistant.pending-account');
+Route::get('/assistant/settings', [AssistantController::class, 'settings'])->name('assistant.settings');
+
+Route::patch('/assistant/pending-account/{id}', [AssistantController::class, 'updatePatientStatus'])->name('assistant.update-status');
+Route::post('/assistant/delete-account', [AssistantController::class, 'userDelete'])->name('assistant.delete-account');
+Route::post('/assistant/settings', [AssistantController::class, 'editAssistantProfile'])->name('assistant.edit-profile');
+Route::post('/assistant/settings/change-password', [AssistantController::class, 'assistantChangePassword'])->name('assistant.change-password');
 /**Assistant Route */
 
 /**Dentist Route */
 Route::get('/dentist/dashboard', [DentistController::class, 'index'])->name('dentist.dashboard');
 Route::get('/dentist/settings', [DentistController::class, 'settings'])->name('dentist.settings');
+Route::get('/dentist/session', [DentistController::class, 'session'])->name('dentist.session');
 
+Route::post('/dentist/session', [DentistController::class, 'addSession'])->name('dentist.add-session');
 Route::post('/delete/delete-account', [DentistController::class, 'userDelete'])->name('dentist.delete-account');
 Route::post('/dentist/settings', [DentistController::class, 'editDentistProfile'])->name('dentist.edit-profile');
 Route::post('/dentist/settings/change-password', [DentistController::class, 'dentistChangePassword'])->name('dentist.change-password');
@@ -88,5 +99,6 @@ Route::post('/dentist/settings/change-password', [DentistController::class, 'den
 /**Logout Route */
 Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
 Route::get('/logout/patient', [PatientController::class, 'logout'])->name('patient.logout');
-Route::get('/logout/dentist', [PatientController::class, 'logout'])->name('dentist.logout');
+Route::get('/logout/dentist', [DentistController::class, 'logout'])->name('dentist.logout');
+Route::get('/logout/assistant', [AssistantController::class, 'logout'])->name('assistant.logout');
 /**Logout Route */

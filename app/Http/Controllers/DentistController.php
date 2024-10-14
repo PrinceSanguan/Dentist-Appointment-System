@@ -7,9 +7,15 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Audit;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\AppointmentSession;
 
 class DentistController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkDentist');
+    }
+
     public function index()
     {
         $totalPatients = User::where('userRole', 'patient')->count();
@@ -116,5 +122,38 @@ class DentistController extends Controller
         $user->delete(); // Delete the Dentist
 
         return response()->json(['message' => 'Your account has been deleted successfully.']);
+    }
+
+    public function session()
+    {
+        $currentDate = date('F j, Y');
+        $sessions = AppointmentSession::with('members')->get();
+        return view ('dentist.session', compact('currentDate', 'sessions'));
+    }
+
+    public function addSession(Request $request)
+    {
+         // Validate the request data with custom error messages
+         $request->validate([
+            'session_title' => 'required',  
+            'schedule_date' => 'required',  
+        ]);
+
+        $dentist = auth()->user();
+
+
+         $user = AppointmentSession::create([
+            'user_id' => $dentist->id,  
+            'session_title' => $request->input('session_title'),
+            'schedule_date' => $request->input('schedule_date'),
+        ]);
+    
+        // Check if user creation was successful
+        if (!$user) {
+            return redirect()->route('dentist.session')->with('error', 'Failed to create user.');
+        }
+    
+        // Redirect with success message if user is created successfully
+        return redirect()->route('dentist.session')->with('success', 'Session Registered!');
     }
 }
