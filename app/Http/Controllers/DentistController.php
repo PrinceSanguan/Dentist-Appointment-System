@@ -127,9 +127,10 @@ class DentistController extends Controller
     public function session()
     {
         $currentDate = date('F j, Y');
-        $sessions = AppointmentSession::with('members')->get();
+        $sessions = AppointmentSession::with('members.user')->get();
         return view ('dentist.session', compact('currentDate', 'sessions'));
     }
+
 
     public function addSession(Request $request)
     {

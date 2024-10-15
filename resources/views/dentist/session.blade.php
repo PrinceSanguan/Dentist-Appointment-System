@@ -28,42 +28,42 @@
       <!-- /.content-header -->
 
       <!-- Main content -->
-      <section class="content">
+    <section class="content">
         <div class="container-fluid">
-          <div class="card">
-            <div class="card-body">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Session Title</th>
-                    <th>Schedule Date</th>
-                    <th>Number of Join</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                @foreach ($sessions as $session)
-                    <tr>
-                      <td>{{$session->session_title}}</td>
-                      <td>{{ \Carbon\Carbon::parse($session->schedule_date)->format('F j, Y') }}</td>
-                      <td>{{ $session->memberCount() }}</td>
-                      <td>
-                        <button class="btn btn-info" onclick="viewSession()">
-                          <i class="fas fa-eye"></i> View
-                        </button>
-                        <button class="btn btn-danger" onclick="cancelSession()">
-                          <i class="fas fa-times"></i> Cancel
-                        </button>
-                      </td>
-                    </tr>
-                @endforeach
-                    
-
-                </tbody>
-              </table>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Session Title</th>
+                                <th>Schedule Date</th>
+                                <th>Number of Join</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($sessions as $session)
+                            <tr>
+                                <td>{{ $session->session_title }}</td>
+                                <td>{{ \Carbon\Carbon::parse($session->schedule_date)->format('F j, Y') }}</td>
+                                <td>{{ $session->memberCount() }}</td>
+                                <td>
+                                    <!-- The 'View' button triggers the modal, we pass the session ID -->
+                                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewMembersModal" onclick="setModalContent({{ $session->id }})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-danger" onclick="">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div><!-- /.container-fluid -->
-      </section>
+    </section>
       <!-- /.content -->
 
       <!-- Add Session Modal -->
@@ -100,22 +100,48 @@
     </div>
     <!-- /.content-wrapper -->
 
+<!-- Modal for Viewing Members -->
+<div class="modal fade" id="viewMembersModal" tabindex="-1" aria-labelledby="viewMembersModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewMembersModalLabel">Members Joined</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul id="members-list" class="list-group">
+          <!-- Members will be loaded here dynamically using JavaScript -->
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     @include('dentist.layout.footer')
   </div>
-  <script>
-    function viewSession(sessionId) {
-      // Implement view logic here
-      alert('Viewing session ' + sessionId);
-    }
 
-    function cancelSession(sessionId) {
-        // Implement cancel logic here
-        if (confirm('Are you sure you want to cancel this session?')) {
-          // Proceed with cancellation (e.g., AJAX request or form submission)
-          alert('Session ' + sessionId + ' cancelled.');
-        }
+  <script>
+    function setModalContent(sessionId) {
+        // Clear the current members list
+        const membersList = document.getElementById('members-list');
+        membersList.innerHTML = '';
+
+        // Find the session in the Blade template by session ID
+        @foreach ($sessions as $session)
+            if ({{ $session->id }} === sessionId) {
+                @foreach ($session->members as $member)
+                    const memberItem = document.createElement('li');
+                    memberItem.classList.add('list-group-item');
+                    memberItem.textContent = "{{ $member->user->full_name }} ({{ $member->user->email }})";
+                    membersList.appendChild(memberItem);
+                @endforeach
+            }
+        @endforeach
     }
-  </script>
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
