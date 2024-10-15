@@ -128,6 +128,7 @@ class DentistController extends Controller
     {
         $currentDate = date('F j, Y');
         $sessions = AppointmentSession::with('members.user')->get();
+        
         return view ('dentist.session', compact('currentDate', 'sessions'));
     }
 
@@ -156,5 +157,25 @@ class DentistController extends Controller
     
         // Redirect with success message if user is created successfully
         return redirect()->route('dentist.session')->with('success', 'Session Registered!');
+    }
+
+    public function cancelSession(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'session_id' => 'required|exists:appointment_sessions,id',
+        ]);
+
+        // Find the appointment session by its ID
+        $session = AppointmentSession::findOrFail($request->session_id);
+
+        // Delete all members associated with the session
+        $session->members()->delete();
+
+        // Delete the session itself
+        $session->delete();
+
+        // Redirect back with a success message
+        return redirect()->route('dentist.session')->with('success', 'Appointment session and its members were successfully canceled.');
     }
 }

@@ -52,9 +52,13 @@
                                     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewMembersModal" onclick="setModalContent({{ $session->id }})">
                                         <i class="fas fa-eye"></i> View
                                     </button>
-                                    <button class="btn btn-danger" onclick="">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </button>
+                                    <form action="{{ route('dentist.cancel-session') }}" method="POST" style="display:inline;">
+                                      @csrf
+                                      <input type="hidden" name="session_id" value="{{ $session->id }}">
+                                      <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this session?')">
+                                          <i class="fas fa-times"></i> Cancel
+                                      </button>
+                                    </form>
                                 </td>
                             </tr>
                             @endforeach
@@ -109,9 +113,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <ul id="members-list" class="list-group">
-          <!-- Members will be loaded here dynamically using JavaScript -->
-        </ul>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="members-table-body">
+            <!-- Members will be dynamically loaded here -->
+          </tbody>
+        </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -124,22 +136,33 @@
   </div>
 
   <script>
-    function setModalContent(sessionId) {
-        // Clear the current members list
-        const membersList = document.getElementById('members-list');
-        membersList.innerHTML = '';
+    // Pass the session data from PHP to JavaScript
+    const sessions = @json($sessions);
 
-        // Find the session in the Blade template by session ID
-        @foreach ($sessions as $session)
-            if ({{ $session->id }} === sessionId) {
-                @foreach ($session->members as $member)
-                    const memberItem = document.createElement('li');
-                    memberItem.classList.add('list-group-item');
-                    memberItem.textContent = "{{ $member->user->full_name }} ({{ $member->user->email }})";
-                    membersList.appendChild(memberItem);
-                @endforeach
-            }
-        @endforeach
+    function setModalContent(sessionId) {
+        // Clear the current table body
+        const membersTableBody = document.getElementById('members-table-body');
+        membersTableBody.innerHTML = '';
+
+        // Find the session by its ID
+        const session = sessions.find(s => s.id === sessionId);
+
+        if (session && session.members.length > 0) {
+            // Loop through each member and add a row to the table
+            session.members.forEach(member => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${member.user.full_name}</td>
+                    <td>${member.user.email}</td>
+                `;
+                membersTableBody.appendChild(row);
+            });
+        } else {
+            // If no members, display a message
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = '<td colspan="2">No members joined</td>';
+            membersTableBody.appendChild(emptyRow);
+        }
     }
 </script>
 

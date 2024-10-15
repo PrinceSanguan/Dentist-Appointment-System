@@ -90,6 +90,7 @@ Route::get('/dentist/dashboard', [DentistController::class, 'index'])->name('den
 Route::get('/dentist/settings', [DentistController::class, 'settings'])->name('dentist.settings');
 Route::get('/dentist/session', [DentistController::class, 'session'])->name('dentist.session');
 
+Route::post('/dentist/session/cancel', [DentistController::class, 'cancelSession'])->name('dentist.cancel-session');
 Route::post('/dentist/session', [DentistController::class, 'addSession'])->name('dentist.add-session');
 Route::post('/delete/delete-account', [DentistController::class, 'userDelete'])->name('dentist.delete-account');
 Route::post('/dentist/settings', [DentistController::class, 'editDentistProfile'])->name('dentist.edit-profile');
