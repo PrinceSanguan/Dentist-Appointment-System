@@ -212,7 +212,7 @@ class AdminController extends Controller
     public function auditLogs()
     {
         $currentDate = date('F j, Y');
-        $logs = Audit::with('user')->get();
+        $logs = Audit::with('user')->orderBy('created_at', 'asc')->get();
 
         return view ('admin.audit-logs', compact('currentDate', 'logs'));
     }

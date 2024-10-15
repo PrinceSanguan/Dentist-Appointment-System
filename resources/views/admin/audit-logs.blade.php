@@ -76,10 +76,11 @@
 
   <script>
     $(function () {
-      $("#logsTable").DataTable({
-        responsive: true,
-        autoWidth: false,
-      });
+        $("#logsTable").DataTable({
+            responsive: true,
+            autoWidth: false,
+            order: [[ 2, 'asc' ]] // Sort by the 'Time of Login' column in ascending order
+        });
     });
   </script>
 
