@@ -8,6 +8,7 @@ use App\Models\Audit;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\AppointmentSession;
+use App\Models\Event;
 
 class DentistController extends Controller
 {
@@ -126,36 +127,54 @@ class DentistController extends Controller
 
     public function session()
     {
-        $currentDate = date('F j, Y');
-        $sessions = AppointmentSession::with('members.user')->get();
+        // Get the authenticated user
+        $user = Auth::user();
         
-        return view ('dentist.session', compact('currentDate', 'sessions'));
+        // Get the current date in 'F j, Y' format
+        $currentDate = date('F j, Y');
+        
+        // Fetch the appointment sessions where the user_id matches the authenticated user,
+        // including the members and their related user data
+        $sessions = AppointmentSession::with('members.user')
+            ->where('user_id', $user->id) // Filter by authenticated user ID
+            ->get();
+        
+        // Return the view with the necessary data
+        return view('dentist.session', compact('currentDate', 'sessions'));
     }
 
 
     public function addSession(Request $request)
     {
-         // Validate the request data with custom error messages
-         $request->validate([
+        // Validate the request data with custom error messages
+        $request->validate([
             'session_title' => 'required',  
             'schedule_date' => 'required',  
         ]);
-
+    
         $dentist = auth()->user();
-
-
-         $user = AppointmentSession::create([
+    
+        // Create the AppointmentSession and store the result
+        $appointmentSession = AppointmentSession::create([
             'user_id' => $dentist->id,  
             'session_title' => $request->input('session_title'),
             'schedule_date' => $request->input('schedule_date'),
         ]);
     
-        // Check if user creation was successful
-        if (!$user) {
-            return redirect()->route('dentist.session')->with('error', 'Failed to create user.');
+        // Check if appointment session creation was successful
+        if (!$appointmentSession) {
+            return redirect()->route('dentist.session')->with('error', 'Failed to create appointment session.');
         }
     
-        // Redirect with success message if user is created successfully
+        // Create the associated Event
+        Event::create([
+            'user_id' => $dentist->id,
+            'appointment_session_id' => $appointmentSession->id, // Use the ID of the newly created AppointmentSession
+            'date' => $request->input('schedule_date'),
+            'title' => $request->input('session_title'),
+        ]);
+    
+        // Redirect with success message
         return redirect()->route('dentist.session')->with('success', 'Session Registered!');
     }
 
@@ -172,10 +191,18 @@ class DentistController extends Controller
         // Delete all members associated with the session
         $session->members()->delete();
 
+        // Find the event associated with this appointment session
+        $event = Event::where('appointment_session_id', $session->id)->first();
+
+        // If an event exists, delete it
+        if ($event) {
+            $event->delete();
+        }
+
         // Delete the session itself
         $session->delete();
 
         // Redirect back with a success message
-        return redirect()->route('dentist.session')->with('success', 'Appointment session and its members were successfully canceled.');
+        return redirect()->back()->with('success', 'Session and associated event canceled successfully.');
     }
 }

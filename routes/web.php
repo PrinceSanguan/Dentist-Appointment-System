@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SignupController;
@@ -27,6 +29,25 @@ Route::post('/signup', [SignupController::class, 'signup'])->name('signup-form')
 
 Route::get('/signin', [IndexController::class, 'signin'])->name('signin');
 Route::post('/signin', [LoginController::class, 'loginForm'])->name('login-form');
+
+// Email verification routes
+Route::get('/email/verify', function () {
+  return view('auth.verify-email');  // View asking the user to verify their email
+})->middleware('auth')->name('verification.notice');
+
+// This route will handle the email verification process
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+  $request->fulfill();  // Mark the user as verified and update the status
+
+  return redirect('/welcome');  // Redirect the user to their dashboard after verification
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// Resend verification email if needed
+Route::post('/email/resend', function (Request $request) {
+  $request->user()->sendEmailVerificationNotification();
+
+  return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
 
 
 /**Admin Route */

@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('appointment_session_id');
             $table->date('date');
             $table->string('title');
             $table->timestamps();
+
+            // Define foreign key constraint
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('appointment_session_id')->references('id')->on('appointment_sessions')->onDelete('cascade');
         });
     }
 

@@ -50,9 +50,21 @@ class AdminController extends Controller
     public function appointment()
     {
         $currentDate = date('F j, Y');
-        $events = Event::all(['title', 'date']); // Adjust fields based on your event model
-    
-        return view('admin.appointment', compact('currentDate', 'events'));
+
+        // Fetch events with the related user (doctor)
+        $events = Event::with('user')->get();
+
+        // Format the events with doctor's name
+        $formattedEvents = $events->map(function ($event) {
+            return [
+                'title' => '"' . $event->title . '"' . '<br>Dr. ' . $event->user->full_name, // Title with a line break before the doctor's name
+                'date' => $event->date,
+                'doctor' => $event->user->full_name // Include doctor's name in the event
+            ];
+        });
+
+        // Return the view with the correct compact syntax
+        return view('admin.appointment', compact('currentDate', 'formattedEvents'));
     }
 
     public function patient()

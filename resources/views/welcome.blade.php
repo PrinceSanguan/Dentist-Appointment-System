@@ -474,18 +474,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
           var calendarEl = document.getElementById('fullCalendar');
-          var eventsData = @json($events); // Events data passed from the controller
-    
-          // Create an object to track event dates but subtract one day from each
-          var eventDates = {};
-          eventsData.forEach(event => {
-            // Parse event date and subtract one day
-            var eventDate = new Date(event.date);
-            eventDate.setDate(eventDate.getDate() - 1); // Subtract one day
-            var formattedDate = eventDate.toISOString().split('T')[0]; // Convert back to 'YYYY-MM-DD' format
-            eventDates[formattedDate] = true; // Store the new (one day earlier) date
-          });
-    
+      
+          // Get the events passed from the controller
+          var eventsData = @json($formattedEvents); // Use formattedEvents
+      
           var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             headerToolbar: {
@@ -494,27 +486,36 @@
               right: 'dayGridMonth'
             },
             events: eventsData.map(event => ({
-              title: event.title,
-              start: event.date // Keep the original event date for display
+              title: event.title,  // Title with doctor's name from the controller
+              start: event.date,   // Event date
             })),
-    
+            eventDidMount: function(info) {
+              // If you need to apply any styles or changes to the rendered event
+              info.el.innerHTML = info.event.title;
+              info.el.style.color = 'white';  // Ensure HTML is rendered
+            },
             dayCellDidMount: function(info) {
-              // Get date in 'YYYY-MM-DD' format from FullCalendar cell
+              // Get the date string for the current cell
               var dateStr = info.date.toISOString().split('T')[0];
-    
-              // For cells outside the current month, hide them
-              if (info.isOtherMonth) {
-                info.el.style.visibility = 'hidden'; // Hide cells outside the current month
-              } else if (eventDates[dateStr]) {
-                // If the (one day earlier) date has an event, color it red
-                info.el.style.backgroundColor = 'red';
-              } else {
-                // If no event on that day, color it green
+      
+              // Get the date string for the next day
+              var previousDate = new Date(info.date);
+              previousDate.setDate(previousDate.getDate() + 1);
+              var previousDateStr = previousDate.toISOString().split('T')[0];
+      
+              // Check if there is an event on the current date
+              var hasEventToday = eventsData.some(event => event.date === dateStr);
+              
+              // Check if there is an event on the previous day
+              var hasEventYesterday = eventsData.some(event => event.date === previousDateStr);
+      
+              // Color the day green if there is an event tomorrow
+              if (hasEventYesterday) {
                 info.el.style.backgroundColor = 'green';
               }
-            },
+            }
           });
-    
+      
           calendar.render();
         });
       </script>
