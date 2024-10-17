@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\ConcernBox;
 use App\Models\AppointmentSession;
 use App\Models\Member;
+use Illuminate\Support\Carbon;
 
 
 class PatientController extends Controller
@@ -23,9 +24,24 @@ class PatientController extends Controller
     public function index()
     {
         $currentDate = date('F j, Y');
-        $patientName = auth()->user()->full_name; 
+        $patientName = auth()->user()->full_name;
     
-        return view('patient.dashboard', compact('currentDate', 'patientName'));
+        // Fetch only the schedule_date of the latest approved appointment for the authenticated user
+        $latestAppointmentDate = Member::join('appointment_sessions', 'members.appointment_session_id', '=', 'appointment_sessions.id')
+            ->where('members.user_id', auth()->user()->id)
+            ->where('members.status', 'approved')
+            ->orderBy('members.created_at', 'desc')
+            ->value('appointment_sessions.schedule_date');
+    
+        // Convert the fetched date to a Carbon object
+        if ($latestAppointmentDate) {
+            $latestAppointmentDate = Carbon::parse($latestAppointmentDate);
+        } else {
+            // Handle the case where there's no latest appointment (optional)
+            $latestAppointmentDate = null;  // or set a default value
+        }
+    
+        return view('patient.dashboard', compact('currentDate', 'patientName', 'latestAppointmentDate'));
     }
 
     public function logout(Request $request)

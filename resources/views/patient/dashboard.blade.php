@@ -32,12 +32,12 @@
                     <div class="small-box bg-info">
                         <div class="inner">
                             <h3>Next Appointment</h3>
-                            <p>You have no appointment</p>
+                            <p>{{ $latestAppointmentDate->format('F j, Y') }}</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-calendar-check"></i>
                         </div>
-                        <a href="#" class="small-box-footer">View Details <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{route('patient.appointment')}}" class="small-box-footer">View Details <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
     
