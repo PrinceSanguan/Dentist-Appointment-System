@@ -12,6 +12,8 @@ class Member extends Model
     protected $fillable = [
         'user_id',
         'appointment_session_id',
+        'time',
+        'status',
     ];
 
     /**

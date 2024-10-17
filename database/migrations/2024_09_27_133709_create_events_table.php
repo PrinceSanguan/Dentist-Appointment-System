@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('appointment_session_id');
             $table->date('date');
             $table->string('title');
+            $table->integer('member');
             $table->timestamps();
 
             // Define foreign key constraint

@@ -36,6 +36,7 @@
                         <thead>
                             <tr>
                                 <th>Session Title</th>
+                                <th>Price</th>
                                 <th>Schedule Date</th>
                                 <th>Number of Join</th>
                                 <th>Actions</th>
@@ -45,8 +46,9 @@
                             @foreach ($sessions as $session)
                             <tr>
                                 <td>{{ $session->session_title }}</td>
+                                <td>₱{{$session->price}}.00</td>
                                 <td>{{ \Carbon\Carbon::parse($session->schedule_date)->format('F j, Y') }}</td>
-                                <td>{{ $session->memberCount() }}</td>
+                                <td>{{ $session->memberCount() }}/{{$session->number_of_member}}</td>
                                 <td>
                                     <!-- The 'View' button triggers the modal, we pass the session ID -->
                                     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewMembersModal" onclick="setModalContent({{ $session->id }})">
@@ -90,6 +92,14 @@
                 <div class="form-group">
                   <label for="schedule_date">Schedule Date</label>
                   <input type="date" class="form-control" id="schedule_date" name="schedule_date" required min="{{ now()->addDay()->toDateString() }}">
+                </div>
+                <div class="form-group">
+                  <label for="number_of_member">Maximum Number of Participants</label>
+                  <input type="number" min="1" max="19" class="form-control" id="number_of_member" name="number_of_member" required pattern="[0-9]+">
+                </div>
+                <div class="form-group">
+                  <label for="price">Price</label>
+                  <input type="number" min="1" class="form-control" id="price" name="price" required pattern="[0-9]+">
                 </div>
               </div>
               <div class="modal-footer">

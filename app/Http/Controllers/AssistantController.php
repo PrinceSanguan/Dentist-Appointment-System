@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Audit;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Member;
 
 class AssistantController extends Controller
 {
@@ -19,13 +20,56 @@ class AssistantController extends Controller
     {
         $currentDate = date('F j, Y');
         $pendingAccount = User::where('status', 'inactive')->count();
+        $pendingAppointment = Member::where('status', 'pending')->count();
 
-        return view ('assistant.dashboard', compact('currentDate', 'pendingAccount'));
+        return view ('assistant.dashboard', compact('currentDate', 'pendingAccount', 'pendingAppointment'));
     }
 
     public function appointmentRequest()
     {
-        return view ('assistant.appointment-request');
+        $currentDate = date('F j, Y');
+    
+        // Fetch all appointments with related user and appointment session data
+        $appointments = Member::with(['user', 'appointmentSession.user'])
+            ->get();
+    
+        return view('assistant.appointment-request', compact('appointments', 'currentDate'));
+    }
+    
+    public function approveAppointment($id)
+    {
+        $appointment = Member::find($id);
+        
+        if ($appointment) {
+            $appointment->update(['status' => 'approved']);
+            return redirect()->back()->with('success', 'Appointment approved successfully.');
+        }
+
+        return redirect()->back()->with('error', 'Appointment not found.');
+    }
+
+    public function disapproveAppointment($id)
+    {
+        $appointment = Member::find($id);
+        
+        if ($appointment) {
+            $appointment->update(['status' => 'disapproved']);
+            return redirect()->back()->with('success', 'Appointment disapproved successfully.');
+        }
+
+        return redirect()->back()->with('error', 'Appointment not found.');
+    }
+
+    // Fetch patient details for 'view'
+    public function viewAppointmentDetails($id)
+    {
+        $appointment = Member::with(['user', 'appointmentSession.user'])->find($id);
+        
+        if ($appointment) {
+            return response()->json($appointment);
+        }
+
+        return response()->json(['error' => 'Appointment not found'], 404);
     }
 
     public function pendingAccount()

@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\Audit;
 use App\Models\ConcernBox;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -255,6 +256,7 @@ class AdminController extends Controller
         return redirect()->route('signin')->with('error', 'You are not logged in.');
     }
 
+
     public function concern()
     {
         $currentDate = date('F j, Y');
@@ -285,6 +287,71 @@ class AdminController extends Controller
             'message' => 'Reply saved successfully.',
             'concern' => $concern,
         ]);
+    }
+
+    public function settings()
+    {
+        
+        $currentDate = date('F j, Y');
+        $user = auth()->user();
+
+        return view ('admin.settings', compact('currentDate', 'user'));
+    }
+
+    public function editAdminProfile(Request $request)
+    {
+        
+        // Check the parameters
+       $request->validate([
+        'full_name' => 'required',
+        'email' => 'required',
+        'number' => 'required',
+        'address' => 'required',
+        'dob' => 'required',
+        ]);
+
+        // Find the category by ID
+        $user = User::find($request->input('id'));
+
+        //update in the database based on id
+        $user->update([
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'number' => $request->number,
+            'address' => $request->address,
+            'dob' => $request->dob,
+        ]);
+
+        // return to the frontent
+        return redirect()->back()->with('success', 'Successfully Updated');
+    }
+
+    public function adminChangePassword(Request $request)
+    {
+        // Validate incoming request data
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => [
+                'required',
+                'regex:/^(?=.*[a-zA-Z])(?=.*\d).{6,}$/',
+            ],
+            'confirm_password' => 'required|same:new_password',
+        ]);
+    
+        $user = auth()->user();
+    
+        // Check if the current password is correct
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'errors' => ['current_password' => ['Incorrect current password']]
+            ], 422);
+        }
+    
+        // Update the user's password
+        $user->update(['password' => Hash::make($request->new_password)]);
+    
+        // Return a success response
+        return response()->json(['message' => 'Password changed successfully!']);
     }
 }
 

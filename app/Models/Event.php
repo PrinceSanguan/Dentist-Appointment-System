@@ -14,6 +14,7 @@ class Event extends Model
         'appointment_session_id',
         'date',
         'title',
+        'member',
     ];
 
     public function user()

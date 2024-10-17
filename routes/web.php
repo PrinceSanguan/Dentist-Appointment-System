@@ -72,6 +72,9 @@ Route::get('/admin/patient/view/{id}', [AdminController::class, 'viewPatient'])-
 Route::get('/admin/concern', [AdminController::class, 'concern'])->name('admin.concern');
 Route::post('/admin/reply', [AdminController::class, 'concernReply'])->name('concern.reply');
 
+Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
+Route::post('/admin/settings', [AdminController::class, 'editAdminProfile'])->name('admin.edit-profile');
+Route::post('/admin/settings/change-password', [AdminController::class, 'adminChangePassword'])->name('admin.change-password');
 Route::patch('/admin/patient/{id}', [AdminController::class, 'updatePatientStatus'])->name('admin.update-status');
 Route::post('/admin/patient/delete/{id}', [AdminController::class, 'patientDeleteAccount'])->name('admin.patient-delete');
 /**Admin Route */
@@ -85,6 +88,10 @@ Route::post('/patient/concern', [PatientController::class, 'userConcernInput'])-
 
 Route::get('/patient/appointment', [PatientController::class, 'appointment'])->name('patient.appointment');
 
+Route::get('/patient/{dentistId}/services', [PatientController::class, 'getDentistServices']);
+Route::get('/patient/{dentistId}/{selectedService}/available-times', [PatientController::class, 'getAvailableTimes']);
+Route::post('/patient/appointment', [PatientController::class, 'bookAppointment'])->name('patient.book-appointment');
+
 Route::get('/patient/dentist', [PatientController::class, 'dentist'])->name('patient.dentist');
 
 Route::get('/patient/settings', [PatientController::class, 'settings'])->name('patient.settings');
@@ -97,6 +104,10 @@ Route::post('/patient/delete-account', [PatientController::class, 'userDelete'])
 Route::get('/assistant/dashboard', [AssistantController::class, 'index'])->name('assistant.dashboard');
 
 Route::get('/assistant/appointment-request', [AssistantController::class, 'appointmentRequest'])->name('assistant.appointment-request');
+Route::get('/assistant/appointment-request/view-appointment-details/{id}', [AssistantController::class, 'viewAppointmentDetails'])->name('assistant.view-user-detail');
+Route::post('/assistant/appointment-request/approve-appointment/{id}', [AssistantController::class, 'approveAppointment'])->name('assistant.approved-request');
+Route::post('/assistant/appointment-request/disapprove-appointment/{id}', [AssistantController::class, 'disapproveAppointment'])->name('assistant.dissaproved-request');
+
 Route::get('/assistant/pending-account', [AssistantController::class, 'pendingAccount'])->name('assistant.pending-account');
 Route::get('/assistant/settings', [AssistantController::class, 'settings'])->name('assistant.settings');
 
@@ -110,6 +121,7 @@ Route::post('/assistant/settings/change-password', [AssistantController::class, 
 Route::get('/dentist/dashboard', [DentistController::class, 'index'])->name('dentist.dashboard');
 Route::get('/dentist/settings', [DentistController::class, 'settings'])->name('dentist.settings');
 Route::get('/dentist/session', [DentistController::class, 'session'])->name('dentist.session');
+Route::get('/dentist/patient', [DentistController::class, 'patient'])->name('dentist.patient');
 
 Route::post('/dentist/session/cancel', [DentistController::class, 'cancelSession'])->name('dentist.cancel-session');
 Route::post('/dentist/session', [DentistController::class, 'addSession'])->name('dentist.add-session');

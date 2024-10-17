@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Assuming users table exists
             $table->foreignId('appointment_session_id')->constrained()->onDelete('cascade'); // Assuming appointment_sessions table exists
+            $table->string('time');
+            $table->enum('status', ['pending', 'approved', 'disapproved']);
             $table->timestamps();
         });
     }

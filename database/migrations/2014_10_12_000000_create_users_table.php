@@ -39,6 +39,54 @@ return new class extends Migration
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'full_name' => 'Juan Dela Cruz',
+                'email' => 'patient@gmail.com',
+                'number' => '09123456789',
+                'address' => 'Makati City',
+                'dob' => '2024-09-11',
+                'userRole' => 'patient',
+                'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'full_name' => 'Willie Ong',
+                'email' => 'dentist@gmail.com',
+                'number' => '09123456789',
+                'address' => 'BGC Bicutan City',
+                'dob' => '2024-09-11',
+                'userRole' => 'dentist',
+                'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'full_name' => 'Apolinario Mabini',
+                'email' => 'assistant@gmail.com',
+                'number' => '09123456789',
+                'address' => 'Mauway, Mandaluyong City',
+                'dob' => '2024-09-11',
+                'userRole' => 'assistant',
+                'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'full_name' => 'Jose Rizal',
+                'email' => 'patient2@gmail.com',
+                'number' => '09123456789',
+                'address' => 'Bulacan',
+                'dob' => '2024-09-11',
+                'userRole' => 'patient',
+                'password' => '$2y$12$8qGbpTMe/NFXUMNZbMB5Gu0SFlp/hOcbGb6yyhSdn6MxedBmK7Eta', // hashed password
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 

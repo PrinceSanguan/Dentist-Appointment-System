@@ -48,7 +48,7 @@
             <!-- small card -->
             <div class="small-box bg-info"> <!-- Changed background color -->
               <div class="inner" style="padding: 20px;"> <!-- Added padding -->
-                <h3>5</h3>
+                <h3>{{$pendingAccount}}</h3>
                 <p>Total Appointment Requests</p> <!-- Fixed typo -->
               </div>
               <div class="icon">

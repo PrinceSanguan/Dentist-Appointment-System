@@ -19,12 +19,12 @@
         </li>
 
         <!-- My Appointment -->
-        <li class="nav-item menu-open" style="margin-bottom: 10px;">
+{{--         <li class="nav-item menu-open" style="margin-bottom: 10px;">
           <a href="" class="nav-link ">
               <i class="nav-icon fas fa-calendar-check"></i>
               <p>My Appointment</p>
           </a>
-        </li>
+        </li> --}}
 
         <!-- My Session -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
@@ -36,7 +36,7 @@
 
         <!-- My Patient -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
-          <a href="" class="nav-link ">
+          <a href="{{ route('dentist.patient') }}" class="nav-link {{ Route::is('dentist.patient') ? 'active' : '' }}">
               <i class="nav-icon fas fa-users"></i>
               <p>My Patient</p>
           </a>

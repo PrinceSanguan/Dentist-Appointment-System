@@ -14,143 +14,212 @@
       <div class="content-header">
         <div class="container-fluid">
           <div class="row mb-2">
-          </div><!-- /.row -->
+            <div class="col-sm-6">
+              <h1 class="m-0">Book an Appointment</h1>
+            </div>
+          </div>
         </div><!-- /.container-fluid -->
       </div>
       <!-- /.content-header -->
 
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title" style="font-size: 2em">Pick a Session</h3>
-            </div>
-            <div class="card-body">
-              <form id="sessionForm" class="needs-validation" novalidate>
-                <div class="form-group">
-                  <label for="doctorSelect">Select Doctor</label>
-                  <select class="form-control" id="doctorSelect" required>
-                    <option value="">Choose a doctor...</option>
-                    <option value="1">Dr. John Doe</option>
-                    <option value="2">Dr. Jane Smith</option>
-                    <option value="3">Dr. Mike Johnson</option>
-                    <option value="4">Dr. Emily Brown</option>
-                  </select>
-                  <div class="invalid-feedback">
-                    Please select a doctor.
-                  </div>
-                </div>
+      <div class="container mt-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <form action="{{route('patient.book-appointment')}}" method="post">
+              @csrf
+              
+              <!-- Select Dentist -->
+              <div class="form-group">
+                <label for="dentist">Select Dentist:</label>
+                <select id="dentist" name="dentist" class="form-control" required>
+                  <option value="">-- Select Dentist --</option>
+                  @foreach($dentists as $dentist)
+                    <option value="{{ $dentist->id }}">{{ $dentist->full_name }}</option>
+                  @endforeach
+                </select>
+              </div>
 
-                <div class="form-group" id="sessionGroup" style="display: none;">
-                  <label for="sessionSelect">Select Session</label>
-                  <select class="form-control" id="sessionSelect" required>
-                    <option value="">Choose a session...</option>
-                    <!-- Options will be populated dynamically -->
-                  </select>
-                  <div class="invalid-feedback">
-                    Please select a session.
-                  </div>
-                </div>
+              <!-- Select Appointment Session (Service) -->
+              <div class="form-group" id="service-container" style="display:none;">
+                <label for="appointment_session">Select Service:</label>
+                <select id="appointment_session" name="appointment_session" class="form-control" required>
+                  <option value="">-- Select Service --</option>
+                </select>
+              </div>
 
-                <div class="form-group" id="dateGroup" style="display: none;">
-                  <label for="datePicker">Pick a Date</label>
-                  <input type="date" class="form-control" id="datePicker" required>
-                  <div class="invalid-feedback">
-                    Please pick a date.
-                  </div>
-                </div>
+              <!-- Select Time -->
+              <div class="form-group" id="time-container" style="display:none;">
+                <label for="appointment_time">Select Time:</label>
+                <select id="appointment_time" name="appointment_time" class="form-control" required>
+                  <option value="">-- Select Time --</option>
+                </select>
+              </div>
 
-                <button type="submit" class="btn btn-primary mt-3" style="display: none;" id="submitBtn">Book Session</button>
-              </form>
-            </div>
+              <button type="submit" class="btn btn-primary btn-block mt-3">Book Appointment</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Appointment List (DataTable) -->
+        <div class="card shadow-sm mt-4">
+          <div class="card-body">
+            <h4>Existing Appointments</h4>
+            <table id="appointments_table" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Doctor</th>
+                  <th>Service</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($appointments as $appointment)
+                <tr>
+                  <td>{{ $appointment->user->full_name }}</td>
+                  <td>{{ $appointment->appointmentSession->session_title }}</td>
+                  <td>{{ $appointment->created_at->format('F j Y') }}</td>
+                  <td>{{ $appointment->time }}</td>
+                  <td>{{ $appointment->status }}</td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-
-    <!-------------------------------------- Main content ---------------------------------------->
+    <!-- /.content-wrapper -->
 
     @include('patient.layout.footer')
   </div>
 
-  <!-- Include DataTables CSS and JS -->
-  <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-  <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
-  <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-  <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-  <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-
-  <!-- Include Bootstrap JS for Modal -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!----Sweet Alert---->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const form = document.getElementById('sessionForm');
-      const doctorSelect = document.getElementById('doctorSelect');
-      const sessionGroup = document.getElementById('sessionGroup');
-      const sessionSelect = document.getElementById('sessionSelect');
-      const dateGroup = document.getElementById('dateGroup');
-      const datePicker = document.getElementById('datePicker');
-      const submitBtn = document.getElementById('submitBtn');
+      const dentistSelect = document.getElementById('dentist');
+      const appointmentSessionSelect = document.getElementById('appointment_session');
+      const appointmentTimeSelect = document.getElementById('appointment_time');
+      const serviceContainer = document.getElementById('service-container');
+      const timeContainer = document.getElementById('time-container');
 
-      doctorSelect.addEventListener('change', function() {
-        if (this.value) {
-          sessionGroup.style.display = 'block';
-          // Populate session options based on selected doctor
-          // This is where you'd typically make an AJAX call to get the sessions
-          sessionSelect.innerHTML = `
-            <option value="">Choose a session...</option>
-            <option value="1">Morning Session</option>
-            <option value="2">Afternoon Session</option>
-            <option value="3">Evening Session</option>
-          `;
+      // Hide service and time initially
+      serviceContainer.style.display = 'none';
+      timeContainer.style.display = 'none';
+
+      // Populate services based on selected dentist
+      dentistSelect.addEventListener('change', function () {
+        const dentistId = this.value;
+
+        if (dentistId) {
+          fetch(`/patient/${dentistId}/services`)
+            .then(response => response.json())
+            .then(data => {
+              appointmentSessionSelect.innerHTML = '<option value="">-- Select Service --</option>';
+              data.forEach(service => {
+                appointmentSessionSelect.innerHTML += `<option value="${service.id}">${service.session_title}</option>`;
+              });
+              // Show the service dropdown once a dentist is selected
+              serviceContainer.style.display = 'block';
+            });
         } else {
-          sessionGroup.style.display = 'none';
-          dateGroup.style.display = 'none';
-          submitBtn.style.display = 'none';
+          appointmentSessionSelect.innerHTML = '<option value="">-- Select Service --</option>';
+          serviceContainer.style.display = 'none';  // Hide service if no dentist selected
+          timeContainer.style.display = 'none';     // Also hide time container
         }
       });
 
-      sessionSelect.addEventListener('change', function() {
-        if (this.value) {
-          dateGroup.style.display = 'block';
-          submitBtn.style.display = 'block';
+      // Show time options after selecting a service and exclude booked times
+      appointmentSessionSelect.addEventListener('change', function () {
+        const selectedService = this.value;
+        const dentistId = dentistSelect.value;
+
+        if (selectedService) {
+          fetch(`/patient/${dentistId}/${selectedService}/available-times`)
+            .then(response => response.json())
+            .then(data => {
+              appointmentTimeSelect.innerHTML = '<option value="">-- Select Time --</option>';
+              const timeSlots = data.available_times;  // available times fetched from backend
+              const bookedTimes = data.booked_times;   // booked times from backend (assume it's sent)
+              
+              timeSlots.forEach(slot => {
+                if (bookedTimes.includes(slot)) {
+                  // Display booked times in red with a message
+                  appointmentTimeSelect.innerHTML += `<option value="${slot}" style="color: red;" disabled>${slot} - This time is already booked!</option>`;
+                } else {
+                  // Display available times normally
+                  appointmentTimeSelect.innerHTML += `<option value="${slot}">${slot}</option>`;
+                }
+              });
+              timeContainer.style.display = 'block'; // Show the time container
+            });
         } else {
-          dateGroup.style.display = 'none';
-          submitBtn.style.display = 'none';
+          timeContainer.style.display = 'none';  // Hide if no service is selected
         }
       });
 
-      form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
+      // Initialize DataTable
+      $(document).ready(function () {
+        $('#appointments_table').DataTable();
       });
-
-      @if (session('success'))
-          Swal.fire({
-              icon: 'success',
-              title: 'Success!',
-              text: '{{ session('success') }}',
-              confirmButtonText: 'OK'
-          });
-      @endif
-
-      @if (session('error'))
-          Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: '{{ session('error') }}',
-              confirmButtonText: 'Try Again'
-          });
-      @endif
     });
-  </script>
+</script>
+
+  <style>
+    .form-control {
+      border-radius: 5px;
+      padding: 5px;
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+
+    .form-group label {
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .card {
+      border-radius: 10px;
+    }
+
+    .card-body {
+      padding: 30px;
+    }
+  </style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'OK'
+        });
+    @endif
+
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}',
+            confirmButtonText: 'Try Again'
+        });
+    @endif
+});
+</script>
+
 </body>
 </html>

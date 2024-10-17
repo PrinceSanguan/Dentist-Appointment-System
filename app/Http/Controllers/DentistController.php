@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\AppointmentSession;
 use App\Models\Event;
+use App\Models\Member;
 
 class DentistController extends Controller
 {
@@ -20,7 +21,7 @@ class DentistController extends Controller
     public function index()
     {
         $totalPatients = User::where('userRole', 'patient')->count();
-        $totalDentists = User::where('userRole', 'patient')->count();
+        $totalDentists = User::where('userRole', 'dentist')->count();
         $currentDate = date('F j, Y');
         $dentistName = auth()->user()->full_name;
 
@@ -150,6 +151,8 @@ class DentistController extends Controller
         $request->validate([
             'session_title' => 'required',  
             'schedule_date' => 'required',  
+            'number_of_member' => 'required',
+            'price' => 'required',
         ]);
     
         $dentist = auth()->user();
@@ -159,6 +162,8 @@ class DentistController extends Controller
             'user_id' => $dentist->id,  
             'session_title' => $request->input('session_title'),
             'schedule_date' => $request->input('schedule_date'),
+            'number_of_member' => $request->input('number_of_member'),
+            'price' => $request->input('price'),
         ]);
     
         // Check if appointment session creation was successful
@@ -172,6 +177,7 @@ class DentistController extends Controller
             'appointment_session_id' => $appointmentSession->id, // Use the ID of the newly created AppointmentSession
             'date' => $request->input('schedule_date'),
             'title' => $request->input('session_title'),
+            'member' => $request->input('number_of_member'),
         ]);
     
         // Redirect with success message
@@ -204,5 +210,20 @@ class DentistController extends Controller
 
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Session and associated event canceled successfully.');
+    }
+
+    public function patient()
+    {
+        $currentDate = date('F j, Y');
+    
+        // Assuming the authenticated user is a doctor and has a relationship to appointments
+        $doctorId = auth()->user()->id; // Get the authenticated doctor's ID
+    
+        // Fetch patients associated with the authenticated doctor's appointments
+        $patients = Member::whereHas('appointmentSession', function($query) use ($doctorId) {
+            $query->where('user_id', $doctorId); // Assuming there's a doctor_id field in the appointments table
+        })->get();
+    
+        return view('dentist.patient', compact('currentDate', 'patients'));
     }
 }

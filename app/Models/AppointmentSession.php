@@ -13,6 +13,8 @@ class AppointmentSession extends Model
         'user_id',
         'session_title',
         'schedule_date',
+        'number_of_member',
+        'price',
     ];
 
     /**

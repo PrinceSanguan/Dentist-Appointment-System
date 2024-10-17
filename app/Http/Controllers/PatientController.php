@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\ConcernBox;
+use App\Models\AppointmentSession;
+use App\Models\Member;
 
 
 class PatientController extends Controller
@@ -55,8 +57,104 @@ class PatientController extends Controller
     public function appointment()
     {
         $currentDate = date('F j, Y');
+    
+        // Fetch all dentists (users with role 'dentist')
+        $dentists = User::where('userRole', 'dentist')->get();
+    
+        // Fetch the authenticated user's appointments only
+        $userId = auth()->user()->id; // Get the currently authenticated user's ID
+    
+        // Fetch all existing appointment sessions (which include services) and related members (appointments)
+        $appointments = Member::with('appointmentSession.user')  // Get appointment sessions with their dentists (users)
+                              ->where('user_id', $userId) // Filter appointments for the authenticated user
+                              ->get(['appointment_session_id', 'user_id', 'time', 'status', 'created_at']);  // We fetch session and time details
+    
+        return view('patient.appointment', compact('currentDate', 'dentists', 'appointments'));
+    }
 
-        return view ('patient.appointment', compact('currentDate'));
+    public function getDentistServices($dentistId)
+    {
+        $services = AppointmentSession::where('user_id', $dentistId)->get(['id', 'session_title']);
+        return response()->json($services);
+    }
+
+    public function bookAppointment(Request $request)
+    {
+        // Validate request
+        $request->validate([
+            'dentist' => 'required|exists:users,id',
+            'appointment_session' => 'required|exists:appointment_sessions,id',
+            'appointment_time' => 'required',
+        ]);
+    
+        // Check if the selected time is already booked for the same session
+        $timeAlreadyBooked = Member::where('appointment_session_id', $request->appointment_session)
+                                   ->where('time', $request->appointment_time)
+                                   ->exists();
+    
+        if ($timeAlreadyBooked) {
+            return redirect()->back()->with('error', 'The time you selected has already been booked. Please choose another time.');
+        }
+    
+        // Check if the user has already booked in the same session
+        $userAlreadyBooked = Member::where('user_id', Auth::id())
+                                   ->where('appointment_session_id', $request->appointment_session)
+                                   ->exists();
+    
+        if ($userAlreadyBooked) {
+            return redirect()->back()->with('error', 'You have already booked this session. You cannot book the same session twice.');
+        }
+    
+        // If no conflicts, save the appointment
+        $member = Member::create([
+            'user_id' => Auth::id(),
+            'appointment_session_id' => $request->appointment_session,
+            'time' => $request->appointment_time,
+            'status' => 'pending',
+        ]);
+    
+        if ($member) {
+            return redirect()->back()->with('success', 'Appointment booked successfully.');
+        }
+    
+        return redirect()->back()->with('error', 'Failed to book the appointment.');
+    }
+
+    public function getAvailableTimes($dentistId, $serviceId)
+    {
+        $bookedTimes = Member::whereHas('appointmentSession', function ($query) use ($dentistId, $serviceId) {
+            $query->where('user_id', $dentistId)
+                  ->where('appointment_session_id', $serviceId);
+        })->pluck('time')->toArray();  // Get booked times as an array
+    
+        $bookedTimesFormatted = array_map(function ($time) {
+            return date('g:i A', strtotime($time));  // Ensure consistent format
+        }, $bookedTimes);
+    
+        $allTimes = $this->generateTimeSlots();
+        $availableTimes = array_diff($allTimes, $bookedTimesFormatted);
+    
+        return response()->json([
+            'available_times' => array_values($availableTimes),
+            'booked_times' => array_values($bookedTimesFormatted)  // Return booked times
+        ]);
+    }
+    
+    private function generateTimeSlots()
+    {
+        $timeSlots = [];
+        $startTime = 7 * 60; // 7:00 AM in minutes
+        $endTime = 16 * 60; // 4:00 PM in minutes
+        $interval = 30; // 30 minutes
+    
+        for ($time = $startTime; $time <= $endTime; $time += $interval) {
+            $hours = floor($time / 60);
+            $minutes = $time % 60;
+            $formattedTime = sprintf("%02d:%02d %s", ($hours % 12 == 0 ? 12 : $hours % 12), $minutes, $hours >= 12 ? 'PM' : 'AM');
+            $timeSlots[] = $formattedTime;  // Add formatted time to the list
+        }
+    
+        return $timeSlots;
     }
     
     public function dentist()
