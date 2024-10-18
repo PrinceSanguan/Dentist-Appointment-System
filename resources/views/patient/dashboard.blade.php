@@ -30,10 +30,10 @@
                 <!-- Appointment Info -->
                 <div class="col-lg-4 col-6">
                     <div class="small-box bg-info">
-                        <div class="inner">
-                            <h3>Next Appointment</h3>
-                            <p>{{ $latestAppointmentDate->format('F j, Y') }}</p>
-                        </div>
+                      <div class="inner">
+                        <h3>Next Appointment</h3>
+                        <p>{{ $latestAppointmentDate ? $latestAppointmentDate->format('F j, Y') : 'You have no upcoming appointments' }}</p>
+                      </div>
                         <div class="icon">
                             <i class="fas fa-calendar-check"></i>
                         </div>

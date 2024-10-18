@@ -103,6 +103,9 @@ Route::post('/patient/delete-account', [PatientController::class, 'userDelete'])
 /**Assistant Route */
 Route::get('/assistant/dashboard', [AssistantController::class, 'index'])->name('assistant.dashboard');
 
+Route::get('/assistant/patient', [AssistantController::class, 'patient'])->name('assistant.patient');
+Route::get('/assistant/patient/view/{id}', [AssistantController::class, 'viewPatient'])->name('assistant.patient-view');
+
 Route::get('/assistant/appointment-request', [AssistantController::class, 'appointmentRequest'])->name('assistant.appointment-request');
 Route::get('/assistant/appointment-request/view-appointment-details/{id}', [AssistantController::class, 'viewAppointmentDetails'])->name('assistant.view-user-detail');
 Route::post('/assistant/appointment-request/approve-appointment/{id}', [AssistantController::class, 'approveAppointment'])->name('assistant.approved-request');

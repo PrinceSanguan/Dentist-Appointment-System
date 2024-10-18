@@ -34,6 +34,14 @@
           </a>
         </li>
 
+        <!-- Patient -->
+        <li class="nav-item menu-open" style="margin-bottom: 10px;">
+          <a href="{{ route('assistant.patient') }}" class="nav-link {{ Route::is('assistant.patient') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Patient</p>
+          </a>
+      </li>
+
         <!-- Settings -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
           <a href="{{ route('assistant.settings') }}" class="nav-link {{ Route::is('assistant.settings') ? 'active' : '' }}">
