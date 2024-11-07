@@ -34,6 +34,22 @@
           </a>
         </li>
 
+        <!-- Add Session -->
+        <li class="nav-item menu-open" style="margin-bottom: 10px;">
+          <a href="{{ route('assistant.session') }}" class="nav-link {{ Route::is('assistant.session') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-plus"></i>
+              <p>Add Session</p>
+          </a>
+        </li>
+
+        <!-- Service -->
+        <li class="nav-item menu-open" style="margin-bottom: 10px;">
+          <a href="{{ route('assistant.service') }}" class="nav-link {{ Route::is('assistant.service') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-cogs"></i>
+              <p>Add Service</p>
+          </a>
+        </li>
+
         <!-- Patient -->
         <li class="nav-item menu-open" style="margin-bottom: 10px;">
           <a href="{{ route('assistant.patient') }}" class="nav-link {{ Route::is('assistant.patient') ? 'active' : '' }}">

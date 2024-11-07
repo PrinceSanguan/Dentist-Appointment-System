@@ -114,6 +114,11 @@ Route::post('/assistant/appointment-request/disapprove-appointment/{id}', [Assis
 Route::get('/assistant/pending-account', [AssistantController::class, 'pendingAccount'])->name('assistant.pending-account');
 Route::get('/assistant/settings', [AssistantController::class, 'settings'])->name('assistant.settings');
 
+Route::get('/assistant/add-session', [AssistantController::class, 'session'])->name('assistant.session');
+
+Route::get('/assistant/services', [AssistantController::class, 'service'])->name('assistant.service');
+Route::post('/assistant/services', [AssistantController::class, 'addService'])->name('assistant.add-service');
+
 Route::patch('/assistant/pending-account/{id}', [AssistantController::class, 'updatePatientStatus'])->name('assistant.update-status');
 Route::post('/assistant/delete-account', [AssistantController::class, 'userDelete'])->name('assistant.delete-account');
 Route::post('/assistant/settings', [AssistantController::class, 'editAssistantProfile'])->name('assistant.edit-profile');

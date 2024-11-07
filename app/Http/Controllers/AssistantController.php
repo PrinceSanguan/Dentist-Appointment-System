@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Audit;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Member;
+use App\Models\Services;
 
 class AssistantController extends Controller
 {
@@ -274,6 +275,41 @@ class AssistantController extends Controller
         }
     
         return response()->json(['html' => $html]);
+    }
+
+    public function session()
+    {
+        $currentDate = date('F j, Y');
+
+        return view ('assistant.add-session', compact('currentDate'));
+    }
+
+    public function service()
+    {
+        $currentDate = date('F j, Y');
+
+        return view ('assistant.services', compact('currentDate'));
+    }
+
+    public function addService(Request $request)
+    {
+    // Check the parameters
+       $request->validate([
+        'service' => 'required',
+        'price' => 'required',
+        ]);
+
+        $service = Services::create([
+            'service' => $request->input('service'),
+            'price' => $request->input('price'),
+        ]);
+
+        if ($service) {
+
+            return redirect()->route('assistant.service')->with('success', 'You are created new Services!');
+        }
+        
+        return redirect()->route('assistant.service')->with('error', 'Failed to create services');
     }
 
 }
