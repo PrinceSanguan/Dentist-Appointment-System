@@ -9,6 +9,7 @@ use App\Models\Audit;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Member;
 use App\Models\Services;
+use App\Models\AppointmentSession;
 
 class AssistantController extends Controller
 {
@@ -277,11 +278,52 @@ class AssistantController extends Controller
         return response()->json(['html' => $html]);
     }
 
+
     public function session()
     {
+        // Get current date
         $currentDate = date('F j, Y');
+    
+        // query to fetch users with the role of 'dentist'
+        $dentists = User::where('userRole', 'dentist')->get();
 
-        return view ('assistant.add-session', compact('currentDate'));
+        // query to fetch services
+        $services = Services::all();
+    
+        // Get all appointment sessions
+        $appointmentSessions = AppointmentSession::all();
+    
+        // Pass data to the view
+        return view('assistant.add-session', compact('currentDate', 'appointmentSessions', 'dentists', 'services'));
+    }
+
+    public function addSession(Request $request)
+    {
+        // Validate the request data with custom error messages
+        $request->validate([
+            'user_id' => 'required', 
+            'session_title' => 'required',  
+            'schedule_date' => 'required',  
+            'number_of_member' => 'required',
+            'price' => 'required',
+        ]);
+
+        // Create the AppointmentSession and store the result
+        $appointmentSession = AppointmentSession::create([
+            'user_id' => $request->input('user_id'),  
+            'session_title' => $request->input('session_title'),
+            'schedule_date' => $request->input('schedule_date'),
+            'number_of_member' => $request->input('number_of_member'),
+            'price' => $request->input('price'),
+        ]);
+
+        // Check if appointment session creation was successful
+        if (!$appointmentSession) {
+            return redirect()->route('assistant.session')->with('error', 'Failed to create appointment session.');
+        }
+
+        // Redirect with success message
+        return redirect()->route('assistant.session')->with('success', 'Session Registered!');
     }
 
     public function service()

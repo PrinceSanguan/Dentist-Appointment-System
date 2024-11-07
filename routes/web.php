@@ -115,6 +115,7 @@ Route::get('/assistant/pending-account', [AssistantController::class, 'pendingAc
 Route::get('/assistant/settings', [AssistantController::class, 'settings'])->name('assistant.settings');
 
 Route::get('/assistant/add-session', [AssistantController::class, 'session'])->name('assistant.session');
+Route::post('/assistant/add-session', [AssistantController::class, 'addSession'])->name('assistant.add-session');
 
 Route::get('/assistant/services', [AssistantController::class, 'service'])->name('assistant.service');
 Route::post('/assistant/services', [AssistantController::class, 'addService'])->name('assistant.add-service');

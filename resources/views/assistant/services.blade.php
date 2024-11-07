@@ -13,7 +13,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0">Add Session</h1>
+              <h1 class="m-0">Add Service</h1>
             </div>
           </div>
         </div>
@@ -43,29 +43,29 @@
     @include('assistant.layout.footer')
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      @if (session('success'))
-          Swal.fire({
-              icon: 'success',
-              title: 'Success!',
-              text: '{{ session('success') }}',
-              confirmButtonText: 'OK'
-          });
-      @endif
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        @endif
 
-      @if (session('error'))
-          Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: '{{ session('error') }}',
-              confirmButtonText: 'Try Again'
-          });
-      @endif
-  });
-  </script>
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'Try Again'
+            });
+        @endif
+    });
+    </script>
 
 </body>
 </html>
