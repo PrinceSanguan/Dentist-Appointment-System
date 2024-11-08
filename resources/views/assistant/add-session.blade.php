@@ -27,14 +27,15 @@
             Add Session
         </button>
 
-        <table class="table">
+        <table id="sessionTable" class="table table-bordered table-striped">
           <thead>
               <tr>
                   <th>User</th>
                   <th>Session Title</th>
                   <th>Schedule Date</th>
-                  <th>Number of Members</th>
+                  <th>Remaining Slot</th>
                   <th>Price</th>
+                  <th>Action</th>
               </tr>
           </thead>
           <tbody>
@@ -43,8 +44,21 @@
                   <td>{{ $session->user->full_name }}</td>
                   <td>{{ $session->session_title }}</td>
                   <td>{{ \Carbon\Carbon::parse($session->schedule_date)->format('F j, Y') }}</td>
-                  <td>{{ $session->number_of_member }}</td>
-                  <td>{{ $session->price }}</td>
+                  <td>{{ $session->number_of_member - $session->memberCount() }}</td>
+                  <td>₱{{ $session->price }}.00</td>
+                  <td>
+                    <!-- The 'View' button triggers the modal, we pass the session ID -->
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewMembersModal" onclick="setModalContent({{ $session->id }})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    <form action="{{route('assistant.cancel-session')}}" method="post" style="display:inline;">
+                      @csrf
+                      <input type="hidden" name="session_id" value="{{ $session->id }}">
+                      <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this session?')">
+                          <i class="fas fa-times"></i> Cancel
+                      </button>
+                    </form>
+                </td>
               </tr>
               @endforeach
           </tbody>
@@ -105,6 +119,36 @@
             </div>
           </div>
           <!-- Add Session Modal../ -->
+
+
+          <!-- Modal for Viewing Members -->
+          <div class="modal fade" id="viewMembersModal" tabindex="-1" aria-labelledby="viewMembersModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="viewMembersModalLabel">Members Joined</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                      </tr>
+                    </thead>
+                    <tbody id="members-table-body">
+                      <!-- Members will be dynamically loaded here -->
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal for Viewing Members ../-->
         
         </div>
       </section>
@@ -150,5 +194,54 @@
         });
     });
 </script>
+
+<script>
+  // Pass the session data from PHP to JavaScript
+  const sessions = @json($sessions);
+
+  function setModalContent(sessionId) {
+      // Clear the current table body
+      const membersTableBody = document.getElementById('members-table-body');
+      membersTableBody.innerHTML = '';
+
+      // Find the session by its ID
+      const session = sessions.find(s => s.id === sessionId);
+
+      if (session && session.members.length > 0) {
+          // Loop through each member and add a row to the table
+          session.members.forEach(member => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                  <td>${member.user.full_name}</td>
+                  <td>${member.user.email}</td>
+              `;
+              membersTableBody.appendChild(row);
+          });
+      } else {
+          // If no members, display a message
+          const emptyRow = document.createElement('tr');
+          emptyRow.innerHTML = '<td colspan="2">No members joined</td>';
+          membersTableBody.appendChild(emptyRow);
+      }
+  }
+</script>
+
+  <!-- Include DataTables CSS and JS -->
+  <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+
+  <script>
+    $(function () {
+      $("#sessionTable").DataTable({
+        responsive: true,
+        autoWidth: false,
+      });
+    });
+  </script>
+
 </body>
 </html>

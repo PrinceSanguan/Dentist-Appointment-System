@@ -135,6 +135,7 @@ class DentistController extends Controller
         $currentDate = date('F j, Y');
         
         // Fetch the appointment sessions where the user_id matches the authenticated user,
+        
         // including the members and their related user data
         $sessions = AppointmentSession::with('members.user')
             ->where('user_id', $user->id) // Filter by authenticated user ID

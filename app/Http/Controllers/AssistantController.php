@@ -292,9 +292,13 @@ class AssistantController extends Controller
     
         // Get all appointment sessions
         $appointmentSessions = AppointmentSession::all();
+
+        // including the members and their related user data
+        $sessions = AppointmentSession::with('members.user')
+        ->get();
     
         // Pass data to the view
-        return view('assistant.add-session', compact('currentDate', 'appointmentSessions', 'dentists', 'services'));
+        return view('assistant.add-session', compact('currentDate', 'appointmentSessions', 'dentists', 'services', 'sessions'));
     }
 
     public function addSession(Request $request)
@@ -324,6 +328,26 @@ class AssistantController extends Controller
 
         // Redirect with success message
         return redirect()->route('assistant.session')->with('success', 'Session Registered!');
+    }
+
+    public function cancelSession(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'session_id' => 'required|exists:appointment_sessions,id',
+        ]);
+
+        // Find the appointment session by its ID
+        $session = AppointmentSession::findOrFail($request->session_id);
+
+        // Delete all members associated with the session
+        $session->members()->delete();
+
+        // Delete the session itself
+        $session->delete();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Session and associated event canceled successfully.');
     }
 
     public function service()
