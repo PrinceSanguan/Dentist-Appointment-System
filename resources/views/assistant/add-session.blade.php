@@ -44,7 +44,7 @@
                   <td>{{ $session->user->full_name }}</td>
                   <td>{{ $session->session_title }}</td>
                   <td>{{ \Carbon\Carbon::parse($session->schedule_date)->format('F j, Y') }}</td>
-                  <td>{{ $session->number_of_member - $session->memberCount() }}</td>
+                  <td>{{ $session->number_of_member  }}</td>
                   <td>₱{{ $session->price }}.00</td>
                   <td>
                     <!-- The 'View' button triggers the modal, we pass the session ID -->

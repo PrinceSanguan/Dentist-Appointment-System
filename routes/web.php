@@ -87,6 +87,7 @@ Route::post('/patient/concern', [PatientController::class, 'userConcernInput'])-
 
 
 Route::get('/patient/appointment', [PatientController::class, 'appointment'])->name('patient.appointment');
+Route::get('/patient/appointments', [PatientController::class, 'getAppointments']);
 
 Route::get('/patient/{dentistId}/services', [PatientController::class, 'getDentistServices']);
 Route::get('/patient/{dentistId}/{selectedService}/available-times', [PatientController::class, 'getAvailableTimes']);

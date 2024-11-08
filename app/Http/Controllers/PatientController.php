@@ -70,24 +70,6 @@ class PatientController extends Controller
         return redirect()->route('signin')->with('error', 'You are not logged in.');
     }
 
-    public function appointment()
-    {
-        $currentDate = date('F j, Y');
-    
-        // Fetch all dentists (users with role 'dentist')
-        $dentists = User::where('userRole', 'dentist')->get();
-    
-        // Fetch the authenticated user's appointments only
-        $userId = auth()->user()->id; // Get the currently authenticated user's ID
-    
-        // Fetch all existing appointment sessions (which include services) and related members (appointments)
-        $appointments = Member::with('appointmentSession.user')  // Get appointment sessions with their dentists (users)
-                              ->where('user_id', $userId) // Filter appointments for the authenticated user
-                              ->get(['appointment_session_id', 'user_id', 'time', 'status', 'created_at']);  // We fetch session and time details
-    
-        return view('patient.appointment', compact('currentDate', 'dentists', 'appointments'));
-    }
-
     public function getDentistServices($dentistId)
     {
         $services = AppointmentSession::where('user_id', $dentistId)->get(['id', 'session_title']);
@@ -102,37 +84,55 @@ class PatientController extends Controller
             'appointment_session' => 'required|exists:appointment_sessions,id',
             'appointment_time' => 'required',
         ]);
-    
+        
+        // Retrieve the AppointmentSession by ID
+        $appointmentSession = AppointmentSession::find($request->appointment_session);
+
+        // Check if the session exists
+        if (!$appointmentSession) {
+            return redirect()->back()->with('error', 'Invalid appointment session.');
+        }
+
+        // Check if there are available spots in the session
+        if ($appointmentSession->number_of_member <= 0) {
+            return redirect()->back()->with('error', 'This appointment session is fully booked. Please select another session.');
+        }
+
         // Check if the selected time is already booked for the same session
         $timeAlreadyBooked = Member::where('appointment_session_id', $request->appointment_session)
-                                   ->where('time', $request->appointment_time)
-                                   ->exists();
-    
+                                ->where('time', $request->appointment_time)
+                                ->exists();
+        
         if ($timeAlreadyBooked) {
             return redirect()->back()->with('error', 'The time you selected has already been booked. Please choose another time.');
         }
-    
+        
         // Check if the user has already booked in the same session
         $userAlreadyBooked = Member::where('user_id', Auth::id())
-                                   ->where('appointment_session_id', $request->appointment_session)
-                                   ->exists();
-    
+                                ->where('appointment_session_id', $request->appointment_session)
+                                ->exists();
+        
         if ($userAlreadyBooked) {
             return redirect()->back()->with('error', 'You have already booked this session. You cannot book the same session twice.');
         }
-    
-        // If no conflicts, save the appointment
+
+        // Create the appointment for the user
         $member = Member::create([
             'user_id' => Auth::id(),
             'appointment_session_id' => $request->appointment_session,
             'time' => $request->appointment_time,
             'status' => 'pending',
         ]);
-    
+        
+        // If the booking is successful, update the number of available spots
         if ($member) {
+            // Decrease the available member spots for the session
+            $appointmentSession->number_of_member = $appointmentSession->number_of_member - 1;
+            $appointmentSession->save();
+
             return redirect()->back()->with('success', 'Appointment booked successfully.');
         }
-    
+        
         return redirect()->back()->with('error', 'Failed to book the appointment.');
     }
 
@@ -290,4 +290,31 @@ class PatientController extends Controller
         // Redirect with success message
         return redirect()->back()->with('success', 'Your concern has been sent.');
     }
+
+    public function appointment()
+    {
+        $currentDate = date('F j, Y');
+    
+        return view('patient.appointment', compact('currentDate'));
+    }
+
+    public function getAppointments()
+    {
+        $appointments = AppointmentSession::with('members')->get();
+    
+        // Format appointments for FullCalendar
+        $events = [];
+        foreach ($appointments as $appointment) {
+            $remainingSlots = $appointment->number_of_member;
+            $events[] = [
+                'start' => $appointment->schedule_date,
+                'title' => "Remaining Slots: {$remainingSlots}",
+                'color' => $remainingSlots > 1 ? '#28a745' : ($remainingSlots === 0 ? '#dc3545' : '#ffc107'), // Green if slots > 1, Red if 0, Yellow if 1
+            ];
+        }
+    
+        return response()->json($events);
+    }
+
+
 }
