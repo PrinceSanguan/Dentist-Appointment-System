@@ -179,7 +179,7 @@
          <!-- Standard Price List Table -->
          <div class="card mt-4">
             <div class="card-header">
-                <h1 class="card-title text-center" style="text-align: center"><strong>Services</strong></h1>
+                <h1 class="card-title text-center" style="text-align: center; color:#000"><strong>Services</strong></h1>
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
