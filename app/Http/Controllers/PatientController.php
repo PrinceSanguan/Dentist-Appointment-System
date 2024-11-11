@@ -301,8 +301,13 @@ class PatientController extends Controller
             return redirect()->back()->with('error', 'You have already booked this session. Please choose another session.');
         }
 
+        // Fetch all booked slots for this appointment session
+        $takenSlots = Member::where('appointment_session_id', $id)
+        ->pluck('time') // Get only the 'time' column
+        ->toArray();
+
         // Otherwise, return the appointment details view
-        return view('patient.appointment-details', compact('appointment', 'currentDate'));
+        return view('patient.appointment-details', compact('appointment', 'currentDate', 'takenSlots'));
     }
 
     public function bookAppointmentSlot(Request $request)

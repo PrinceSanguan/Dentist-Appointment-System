@@ -10,7 +10,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0">Appointment Details</h1>
+              <h1 class="m-0">Session {{$appointment->session_title}}</h1>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
                 @php
                   $start = \Carbon\Carbon::createFromFormat('H:i', '08:00');
                 @endphp
-
+            
                 @foreach(range(0, 15) as $i)
                   @php
                     $startTime = $start->copy()->addMinutes($i * 30);
@@ -35,10 +35,14 @@
                     $formattedStartTime = $startTime->format('h:i A');
                     $formattedEndTime = $endTime->format('h:i A');
                     $slot = $formattedStartTime . ' - ' . $formattedEndTime;
+                    $isTaken = in_array($slot, $takenSlots); // Check if this slot is taken
                   @endphp
                   
                   <div class="col-3 mb-2">
-                    <button class="btn btn-success btn-block" data-slot="{{ $slot }}" onclick="selectSlot('{{ $slot }}')">
+                    <button class="btn btn-block {{ $isTaken ? 'btn-danger' : 'btn-success' }}" 
+                            data-slot="{{ $slot }}" 
+                            onclick="selectSlot('{{ $slot }}')"
+                            {{ $isTaken ? 'disabled' : '' }}> <!-- Disable button if taken -->
                       {{ $slot }}
                     </button>
                   </div>
@@ -66,6 +70,11 @@
         <div class="modal-body">
           <!-- Fixed the hidden input -->
           <input type="hidden" id="appointmentSessionId" value="{{ $appointment->id }}">
+
+          <div class="form-group">
+            <label for="sessionTitle">Doctor:</label>
+            <input type="text" class="form-control" id="sessionTitle" value="{{ $appointment->user->full_name }}" readonly>
+          </div>
 
           <div class="form-group">
             <label for="sessionTitle">Session Title:</label>
