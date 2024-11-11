@@ -12,6 +12,7 @@ use App\Models\ConcernBox;
 use App\Models\AppointmentSession;
 use App\Models\Member;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class PatientController extends Controller
@@ -135,43 +136,7 @@ class PatientController extends Controller
         
         return redirect()->back()->with('error', 'Failed to book the appointment.');
     }
-
-    public function getAvailableTimes($dentistId, $serviceId)
-    {
-        $bookedTimes = Member::whereHas('appointmentSession', function ($query) use ($dentistId, $serviceId) {
-            $query->where('user_id', $dentistId)
-                  ->where('appointment_session_id', $serviceId);
-        })->pluck('time')->toArray();  // Get booked times as an array
     
-        $bookedTimesFormatted = array_map(function ($time) {
-            return date('g:i A', strtotime($time));  // Ensure consistent format
-        }, $bookedTimes);
-    
-        $allTimes = $this->generateTimeSlots();
-        $availableTimes = array_diff($allTimes, $bookedTimesFormatted);
-    
-        return response()->json([
-            'available_times' => array_values($availableTimes),
-            'booked_times' => array_values($bookedTimesFormatted)  // Return booked times
-        ]);
-    }
-    
-    private function generateTimeSlots()
-    {
-        $timeSlots = [];
-        $startTime = 7 * 60; // 7:00 AM in minutes
-        $endTime = 16 * 60; // 4:00 PM in minutes
-        $interval = 30; // 30 minutes
-    
-        for ($time = $startTime; $time <= $endTime; $time += $interval) {
-            $hours = floor($time / 60);
-            $minutes = $time % 60;
-            $formattedTime = sprintf("%02d:%02d %s", ($hours % 12 == 0 ? 12 : $hours % 12), $minutes, $hours >= 12 ? 'PM' : 'AM');
-            $timeSlots[] = $formattedTime;  // Add formatted time to the list
-        }
-    
-        return $timeSlots;
-    }
     
     public function dentist()
     {
@@ -301,20 +266,95 @@ class PatientController extends Controller
     public function getAppointments()
     {
         $appointments = AppointmentSession::with('members')->get();
-    
-        // Format appointments for FullCalendar
+
         $events = [];
         foreach ($appointments as $appointment) {
             $remainingSlots = $appointment->number_of_member;
             $events[] = [
                 'start' => $appointment->schedule_date,
                 'title' => "Remaining Slots: {$remainingSlots}",
-                'color' => $remainingSlots > 1 ? '#28a745' : ($remainingSlots === 0 ? '#dc3545' : '#ffc107'), // Green if slots > 1, Red if 0, Yellow if 1
+                'color' => $remainingSlots > 1 ? '#28a745' : ($remainingSlots === 0 ? '#dc3545' : '#ffc107'),
+                'extendedProps' => [
+                    'appointmentId' => $appointment->id
+                ]
             ];
         }
-    
+
         return response()->json($events);
     }
 
+    public function appointmentDetails($id)
+    {
+        $currentDate = date('F j, Y');
 
+        // Fetch the appointment session details
+        $appointment = AppointmentSession::findOrFail($id);
+        
+        // Check if the user has already booked this session
+        $userId = Auth::id(); // Get the ID of the currently authenticated user
+        $existingBooking = Member::where('user_id', $userId)
+                                ->where('appointment_session_id', $id)
+                                ->first();
+
+        // If booking exists, return an error message
+        if ($existingBooking) {
+            return redirect()->back()->with('error', 'You have already booked this session. Please choose another session.');
+        }
+
+        // Otherwise, return the appointment details view
+        return view('patient.appointment-details', compact('appointment', 'currentDate'));
+    }
+
+    public function bookAppointmentSlot(Request $request)
+    {
+        // Get the authenticated user
+        $user = Auth::user();
+    
+        // Validate the incoming request data
+        $request->validate([
+            'appointment_session_id' => 'required', // Ensure the session exists in the database
+            'time' => 'required', // Ensure the time is in the correct format (e.g., 08:00)
+        ]);
+    
+        // Retrieve the AppointmentSession by ID
+        $appointmentSession = AppointmentSession::find($request->appointment_session_id);
+    
+        // Check if the appointment session exists
+        if (!$appointmentSession) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Appointment session not found.',
+            ], 404);
+        }
+    
+        // Check if there are available spots for the session
+        if ($appointmentSession->number_of_member <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No available spots for this session.',
+            ], 400);
+        }
+    
+        // Create a new Member record for the appointment
+        $member = Member::create([
+            'user_id' => $user->id,
+            'appointment_session_id' => $appointmentSession->id, // Correct column name for session ID
+            'time' => $request->time,
+            'status' => 'pending', // Default status is pending
+        ]);
+    
+        // If the booking is successful, update the available spots for the session
+        if ($member) {
+            // Decrease the available member spots for the session
+            $appointmentSession->number_of_member -= 1;
+            $appointmentSession->save();
+        }
+    
+        // Respond with success
+        return response()->json([
+            'success' => true,
+            'message' => 'Appointment booked successfully!',
+            'data' => $member,
+        ], 201);
+    }
 }

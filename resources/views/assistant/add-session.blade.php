@@ -107,7 +107,7 @@
       
                           <div class="mb-3">
                               <label for="number_of_member" class="form-label">Number of Join</label>
-                              <input type="number" min="1" max="19" class="form-control" id="number_of_member" name="number_of_member" required pattern="[0-9]+">
+                              <input type="number" min="1" max="16" class="form-control" id="number_of_member" name="number_of_member" required pattern="[0-9]+">
                           </div>
                       </div>
                       <div class="modal-footer">

@@ -88,10 +88,11 @@ Route::post('/patient/concern', [PatientController::class, 'userConcernInput'])-
 
 Route::get('/patient/appointment', [PatientController::class, 'appointment'])->name('patient.appointment');
 Route::get('/patient/appointments', [PatientController::class, 'getAppointments']);
+Route::get('/patient/appointment/{id}/details', [PatientController::class, 'appointmentDetails'])->name('patient.appointment-details');
+Route::post('/patient/appointment/book-appointment', [PatientController::class, 'bookAppointmentSlot'])->name('patient.book-appointment');
 
 Route::get('/patient/{dentistId}/services', [PatientController::class, 'getDentistServices']);
 Route::get('/patient/{dentistId}/{selectedService}/available-times', [PatientController::class, 'getAvailableTimes']);
-Route::post('/patient/appointment', [PatientController::class, 'bookAppointment'])->name('patient.book-appointment');
 
 Route::get('/patient/dentist', [PatientController::class, 'dentist'])->name('patient.dentist');
 

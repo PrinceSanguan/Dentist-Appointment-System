@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,6 +18,21 @@ return new class extends Migration
             $table->integer('price');
             $table->timestamps();
         });
+
+        DB::table('services')->insert([
+            [
+                'service' => 'Consultation',
+                'price' => '500',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'service' => 'Periapical Radiograph',
+                'price' => '750',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 
     /**

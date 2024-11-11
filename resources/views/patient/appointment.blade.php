@@ -1,5 +1,4 @@
 @include('patient.layout.header')
-
 <body class="hold-transition sidebar-mini">
   <div class="wrapper">
     @include('patient.layout.navbar')
@@ -31,52 +30,78 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Initialize FullCalendar
-      var calendarEl = document.getElementById('calendar');
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: '/patient/appointments',  // URL to fetch events data
-        displayEventTime: false,
-  
-        // Customize each event's appearance
-        eventDidMount: function(info) {
-          // Get the text content of the event title element
-          const eventTitleEl = info.el.querySelector('.fc-event-title');
-          const remainingSlots = parseInt(eventTitleEl.textContent.replace('Remaining Slots: ', ''));
-  
-          // Set the background color based on the remaining slots
-          if (remainingSlots === 0) {
-            eventTitleEl.style.backgroundColor = '#dc3545'; // Red for zero slots
-          } else if (remainingSlots > 1) {
-            eventTitleEl.style.backgroundColor = '#28a745'; // Green for more than one slot
-          } else {
-            eventTitleEl.style.backgroundColor = '#ffc107'; // Yellow for one slot
-          }
-  
-          eventTitleEl.style.color = 'white'; // White text color for contrast
-          eventTitleEl.style.padding = '2px 4px'; // Optional padding for better appearance
-          eventTitleEl.style.borderRadius = '4px'; // Rounded corners for the text background
-        },
-  
-        eventClick: function(info) {
-          // Show additional info on click
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: '/patient/appointments',
+      displayEventTime: false,
+
+      eventDidMount: function(info) {
+        // Extract remaining slots from the event title (assuming title contains "Slots: X")
+        const eventTitleEl = info.el.querySelector('.fc-event-title');
+        const remainingSlots = parseInt(eventTitleEl.textContent.split(':')[1]);
+
+        // Set background color based on remaining slots
+        if (remainingSlots === 0) {
+          info.el.style.backgroundColor = '#dc3545';  // red for no slots
+        } else if (remainingSlots > 1) {
+          info.el.style.backgroundColor = '#28a745';  // green for available slots
+        } else {
+          info.el.style.backgroundColor = '#ffc107';  // yellow for few slots
+        }
+
+        // Ensure text color is white for readability
+        info.el.style.color = 'white';
+        info.el.style.padding = '2px 4px';
+        info.el.style.borderRadius = '4px';
+      },
+
+      eventClick: function(info) {
+        const appointmentId = info.event.extendedProps.appointmentId;
+        const remainingSlots = parseInt(info.event.title.split(':')[1]);
+
+        if (remainingSlots > 0) {
+          window.location.href = `/patient/appointment/${appointmentId}/details`;
+        } else {
           Swal.fire({
-            title: 'Appointment',
-            text: info.event.title,
-            icon: 'info',
+            title: 'No Available Slots',
+            text: 'Sorry, this session is fully booked.',
+            icon: 'error',
             confirmButtonText: 'OK'
           });
         }
-      });
-  
-      calendar.render();
+      }
     });
+
+    calendar.render();
+  });
   </script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      @if (session('success'))
+          Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: '{{ session('success') }}',
+              confirmButtonText: 'OK'
+          });
+      @endif
+
+      @if (session('error'))
+          Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: '{{ session('error') }}',
+              confirmButtonText: 'Try Again'
+          });
+      @endif
+  });
+</script>
 </body>
 </html>
