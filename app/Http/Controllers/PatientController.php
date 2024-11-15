@@ -17,10 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 class PatientController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('checkPatient');
-    }
+    
 
     public function index()
     {

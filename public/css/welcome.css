@@ -151,6 +151,7 @@ p {
     background-color: transparent;
     transition: 0.3s ease-in-out;
 }
+
 .header_wrapper .navbar-toggler,
 .header_wrapper .navbar-toggler:focus {
     border: 0;
@@ -162,6 +163,7 @@ p {
 .header_wrapper .nav-item {
     margin: 0 0.625rem;
 }
+
 .header_wrapper .nav-item .nav-link {
     font-size: 1.125rem;
     font-weight: 400;
@@ -169,11 +171,13 @@ p {
     display: inline-block;
     font-family: var(--secondary-font);
 }
+
 .header_wrapper .nav-item .nav-link:hover,
 .header_wrapper .nav-item .nav-link:focus,
 .header_wrapper .nav-item .nav-link.active {
     color: var(--secondary-text);
 }
+
 .navbar.header-scrolled {
     position: fixed;
     top: 0;

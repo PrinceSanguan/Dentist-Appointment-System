@@ -135,6 +135,71 @@
         </div>
     </section>
 
+
+    <div id="calendar">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+              <div id="calendar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+        
+  <link href="{{ asset('plugins/fullcalendar/main.min.css') }}" rel="stylesheet" />
+  <script src="{{ asset('plugins/fullcalendar/main.min.js') }}"></script>
+
+  <style>
+    .fc-toolbar-title {
+        color: rgb(0, 0, 0); /* Set the month text color to yellow */
+        font-weight: bold;
+        font-size: 3rem; /* Optional: Makes the month text bold for better readability */
+    }
+</style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: '/patient/appointments',
+      displayEventTime: false,
+
+      eventDidMount: function(info) {
+        // Extract remaining slots from the event title (assuming title contains "Slots: X")
+        const eventTitleEl = info.el.querySelector('.fc-event-title');
+        const remainingSlots = parseInt(eventTitleEl.textContent.split(':')[1]);
+
+        // Set background color based on remaining slots
+        if (remainingSlots === 0) {
+          info.el.style.backgroundColor = '#dc3545';  // red for no slots
+        } else if (remainingSlots > 1) {
+          info.el.style.backgroundColor = '#28a745';  // green for available slots
+        } else {
+          info.el.style.backgroundColor = '#ffc107';  // yellow for few slots
+        }
+
+        // Ensure text color is white for readability
+        info.el.style.color = 'white';
+        info.el.style.padding = '2px 4px';
+        info.el.style.borderRadius = '4px';
+      },
+
+    });
+
+    calendar.render();
+  });
+  </script>
+
    
     <section id="about" class="about_wrapper wrapper">
         <div class="container">
@@ -690,75 +755,7 @@
             </div>
         </div>
     </section>
-
-        <div id="calendar">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title" style="color: black">
-                      <i class="far fa-calendar-alt"></i> Full Appointment Calendar - {{$currentMonth}}
-                    </h3>
-                  </div>
-                  <div class="card-body">
-                    <div id="fullCalendar"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-    <link href="{{ asset('plugins/fullcalendar/main.min.css') }}" rel="stylesheet" />
-    <script src="{{ asset('plugins/fullcalendar/main.min.js') }}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          var calendarEl = document.getElementById('fullCalendar');
-      
-          // Get the events passed from the controller
-          var eventsData = @json($formattedEvents); // Use formattedEvents
-      
-          var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth'
-            },
-            events: eventsData.map(event => ({
-              title: event.title,  // Title with doctor's name from the controller
-              start: event.date,   // Event date
-            })),
-            eventDidMount: function(info) {
-              // If you need to apply any styles or changes to the rendered event
-              info.el.innerHTML = info.event.title;
-              info.el.style.color = 'white';  // Ensure HTML is rendered
-            },
-            dayCellDidMount: function(info) {
-              // Get the date string for the current cell
-              var dateStr = info.date.toISOString().split('T')[0];
-      
-              // Get the date string for the next day
-              var previousDate = new Date(info.date);
-              previousDate.setDate(previousDate.getDate() + 1);
-              var previousDateStr = previousDate.toISOString().split('T')[0];
-      
-              // Check if there is an event on the current date
-              var hasEventToday = eventsData.some(event => event.date === dateStr);
-              
-              // Check if there is an event on the previous day
-              var hasEventYesterday = eventsData.some(event => event.date === previousDateStr);
-      
-              // Color the day green if there is an event tomorrow
-              if (hasEventYesterday) {
-                info.el.style.backgroundColor = 'green';
-              }
-            }
-          });
-      
-          calendar.render();
-        });
-      </script>
+  
 
     <section id="contact" class="footer_wrapper wrapper">
         <div class="container pb-3">
@@ -854,6 +851,16 @@
             });
         @endif
     });
+
+    // JavaScript to toggle navbar on scroll
+document.addEventListener("scroll", function () {
+    const navbar = document.querySelector(".header_wrapper .navbar");
+    if (window.scrollY > 50) {
+        navbar.classList.add("header-scrolled");
+    } else {
+        navbar.classList.remove("header-scrolled");
+    }
+});
     </script>
 
 </body>
